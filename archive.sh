@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.0.1"
+VERSION="0.0.2"
 
 ### Project Constants (Need to be set by project)
 
@@ -16,8 +16,10 @@ PUBLISH_URL="##publish_url_folder##"
 ### Constants (Usually need to be set only once)
 
 export COMPANYNAME="##your_company##"
+COMPANYEMAIL="##company_email##"
 REMOTEPATH="##your_server_remote_path##/${APPNAME}"
 TRANSMIT_FAVNAME="##your_transmit_fav##"
+
 
 ### Script Constants
 
@@ -49,11 +51,14 @@ function usage
     echo "usage: ./archive.sh [ [-v] [-h] [--version] ]"
 }
 
-verbose=
+verbose=0
+send_email=0
 
 while [ "$1" != "" ]; do
 	case $1 in
 		-v | --verbose )	verbose=1
+							;;
+		-email )			send_email=1
 							;;
 		--version )			echo $VERSION
 							exit
@@ -77,24 +82,24 @@ if [ ! -d  "${RESOURCESPATH}" ]; then
 fi
 
 #### Build
+echo "Building…"
 
 if [ ! -d "$ARCHIVEPATH" ]; then
 	mkdir "$ARCHIVEPATH"
 fi
 
-build=$(xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -destination generic/platform=iOS archive -archivePath "$XCARCHIVEPATH")
+build="xcodebuild -workspace \"$WORKSPACE\" -scheme \"$SCHEME\" -destination generic/platform=iOS archive -archivePath \"$XCARCHIVEPATH\""
 
-[ $verbose -neq 1 ] && build=$build" | egrep -A 5 \"(error|warning):\""
+[ $verbose -ne 1 ] && build=$build" | egrep -A 5 \"(error|warning):\""
 
 eval $build
 
-rm "$IPAARCHIVEPATH"
-
 #### Archive
+echo "Archiving…"
 
-archive=$(xcodebuild -exportArchive -exportFormat ipa -archivePath "$XCARCHIVEPATH" -exportPath "$IPAARCHIVEPATH" -exportProvisioningProfile "$PROVPROFILE")
+archive="xcodebuild -exportArchive -exportFormat ipa -archivePath \"$XCARCHIVEPATH\" -exportPath \"$IPAARCHIVEPATH\" -exportProvisioningProfile \"$PROVPROFILE\""
 
-[ $verbose -neq 1 ] && archive=$archive" > /dev/null"
+[ $verbose -ne 1 ] && archive=$archive" > /dev/null"
 
 eval $archive
 
@@ -106,16 +111,25 @@ export APP_VERSION=`/usr/libexec/PlistBuddy -c Print:CFBundleShortVersionString 
 
 export BUNDLE_ID=`/usr/libexec/PlistBuddy -c Print:CFBundleIdentifier "$PLISTFILE"`
 
+export DISPLAY_APPNAME
+
 #### Request changes
 
 CHANGES=`osascript -e "set changes to the text returned of (display dialog \"What has changed?\" default answer \"Fixes\")
 return changes"`
+
+if [ -n "$CHANGES" ];
+then
+	echo "User Cancelled"
+	exit 0
+fi
 
 export CHANGES
 
 export COMPANYNAME
 
 #### Fill template & generate html file
+echo "Filling templates…"
 
 perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "${TEMPLATE_HTML_FILENAME}" > "${HTMLARCHIVEPATH}"
 
@@ -128,7 +142,8 @@ then
 	cp -R "$CSSPATH" "$CSSARCHIVEPATH"
 	
 	#### Find Icon & copy to archive
-
+	echo "Finding Icon…"
+	
 	iconpath=`find $ROOT_DIR -type d -name '*.appiconset' -print | head -n 1`
 	if [ -n "$iconpath" ];
 	then
@@ -162,6 +177,7 @@ then
 	fi
 	
 	#### Upload with Transmit
+	echo "Uploading…"
 	
 	osascript  -e "
 	tell application \"Transmit\"
@@ -174,10 +190,27 @@ then
 				upload item at path \"${HTMLARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
 				upload item at path \"${ICONARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
 				upload item at path \"${CSSARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
+				upload item at path \"${PLISTARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
 			end tell
 			close remote browser
 		end tell
 	end tell"
+	
+	#### Send email
+
+	if [ send_email -eq 1 ];
+	then
+	echo "Sending email…"
+	osascript -e "
+	tell application \"Mail\"
+		set theMessage to make new outgoing message with properties {subject:\"${APPNAME} ${APP_VERSION} Published\", content:${CHANGES}, visible:true}
+		tell theMessage
+			make new to recipient with properties {name:\"${COMPANYNAME}\", address:\"${COMPANYEMAIL}\"}
+			send
+		end tell
+	end tell"
+	fi
+	
 else
 	
 	#### Report Error
