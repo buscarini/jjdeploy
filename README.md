@@ -1,6 +1,6 @@
 # JJDeployer
 
-Script to deploy iOS apps (enterprise or adhoc). Builds, archives, generates an html &amp; uploads everything to a server (Requires Transmit).
+Script to deploy iOS apps (enterprise or adhoc). Archives & exports your app as an ipa, commits your changes, generates an html &amp; uploads everything to a server.
 
 ## Requirements
 
@@ -14,11 +14,26 @@ Script to deploy iOS apps (enterprise or adhoc). Builds, archives, generates an 
 2. Open archive.sh and modify the project constants according to your project
 3. Open Terminal and run (from the project folder): ./archive.sh
 
+## What does it do?
+
+1. Creates the archive path
+2. Archives your app to a xcarchive file
+3. Exports this archive to an ipa file
+4. Asks you for a simple description of the changes made
+5. Fills the html template file and generates an html file in the archive path
+6. Finds the biggest icon in your image assets, and copies it to the archive path as Icon.png
+7. If it finds a git or mercurial repository in your project, it will add any changes, commit using your provided changes, and push
+8. Uploads the ipa, the html and the icon to your server
+
 ## Additional Options
 
 You can run archive.sh with these parameters:
 
--v (--verbose) will display all the xcodebuild output
+> *-v (or --verbose)* will display all the xcodebuild output
+
+> *--version* Displays the current script version
+
+> *-h* Displays usage instructions
 
 ## Creators
 

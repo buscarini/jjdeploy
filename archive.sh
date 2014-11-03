@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+VERSION="0.0.1"
+
 ### Project Constants
 
 PROJECTDIR="."
@@ -32,7 +34,7 @@ endColor='\x1B[0m'
 
 function usage
 {
-    echo "usage: ./archive.sh [-v]"
+    echo "usage: ./archive.sh [ [-v] [-h] [--version] ]"
 }
 
 verbose=
@@ -40,6 +42,9 @@ verbose=
 while [ "$1" != "" ]; do
 	case $1 in
 		-v | --verbose )	verbose=1
+							;;
+		--version )			echo $VERSION
+							exit
 							;;
 		-h | --help )		usage
 					  		exit
@@ -135,6 +140,7 @@ then
 			tell remote browser
 				upload item at path \"${IPAARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
 				upload item at path \"${HTMLARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
+				upload item at path \"${ICONARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
 			end tell
 			close remote browser
 		end tell
