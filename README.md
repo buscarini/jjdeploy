@@ -10,7 +10,7 @@ Script to deploy iOS apps (enterprise or adhoc). Archives & exports your app as 
 
 ## How to use
 
-1. Copy *archive.sh*, *index_template.html* and *css* folder to your project folder
+1. Copy *archive.sh* and *archive_resources_* to your project folder
 2. Open *archive.sh* and modify the project constants according to your project
 3. Open Terminal and run (from the project folder): ./archive.sh
 

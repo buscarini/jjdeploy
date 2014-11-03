@@ -2,31 +2,40 @@
 
 VERSION="0.0.1"
 
-### Project Constants
+### Project Constants (Need to be set by project)
 
-PROJECTDIR="."
+ROOT_DIR="."
 APPNAME="##project_name##"
 DISPLAY_APPNAME="##app_display_name##"
 WORKSPACE="##workspace_name##.xcworkspace"
 SCHEME="##scheme_for_archiving##"
 PROVPROFILE="##provisioning_profile_for_archiving##"
 PLISTFILE="##path_to_info.plist##"
-export PUBLISH_PLIST_LINK="##link_to_plist_file##"
+PUBLISH_URL="##publish_url_folder##"
 
-### Constants
+### Constants (Usually need to be set only once)
 
 export COMPANYNAME="##your_company##"
 REMOTEPATH="##your_server_remote_path##/${APPNAME}"
 TRANSMIT_FAVNAME="##your_transmit_fav##"
 
+### Script Constants
+
+export PUBLISH_PLIST_URL="${PUBLISH_URL}/${APPNAME}.plist"
+export PUBLISH_IPA_URL="${PUBLISH_URL}/${APPNAME}.ipa"
+
+RESOURCESPATH="archive_resources"
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 ARCHIVEPATH="$HOME/Desktop/outbox/archive/${APPNAME}"
 XCARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.xcarchive"
 IPAARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.ipa"
+PLISTPATH="${RESOURCESPATH}/app.plist"
+PLISTARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.plist"
 
-TEMPLATE_HTML_FILENAME="index_template.html"
+TEMPLATE_HTML_FILENAME="${RESOURCESPATH}/index_template.html"
 HTML_FILENAME="index.html"
 HTMLARCHIVEPATH="$ARCHIVEPATH/$HTML_FILENAME"
+CSSPATH="${RESOURCESPATH}/css"
 CSSARCHIVEPATH="$ARCHIVEPATH/css"
 ICONARCHIVEPATH="$ARCHIVEPATH/Icon.png"
 
@@ -60,6 +69,13 @@ done
 
 ### Commands
 
+#### Check required resources are copied into the project folder
+
+if [ ! -d  "${RESOURCESPATH}" ]; then
+	echo -e "${redColor} Error: Archive Resources not found. Please copy '${RESOURCESPATH}' folder into the project folder and run the script again.\n${endColor}"
+	exit 1
+fi
+
 #### Build
 
 if [ ! -d "$ARCHIVEPATH" ]; then
@@ -88,6 +104,8 @@ export CURRENT_TIMESTAMP=`date +"%d.%m.%Y %H:%M"`
 
 export APP_VERSION=`/usr/libexec/PlistBuddy -c Print:CFBundleShortVersionString "$PLISTFILE"`
 
+export BUNDLE_ID=`/usr/libexec/PlistBuddy -c Print:CFBundleIdentifier "$PLISTFILE"`
+
 #### Request changes
 
 CHANGES=`osascript -e "set changes to the text returned of (display dialog \"What has changed?\" default answer \"Fixes\")
@@ -99,16 +117,19 @@ export COMPANYNAME
 
 #### Fill template & generate html file
 
-perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "$TEMPLATE_HTML_FILENAME" > "${HTMLARCHIVEPATH}"
+perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "${TEMPLATE_HTML_FILENAME}" > "${HTMLARCHIVEPATH}"
+
+### Fill plist file
+perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "${PLISTPATH}" > "${PLISTARCHIVEPATH}"
 
 if [ -f $HTMLARCHIVEPATH ];
 then
 	#### Copy css files
-	cp -R $SCRIPTPATH/css/ $CSSARCHIVEPATH
+	cp -R "$CSSPATH" "$CSSARCHIVEPATH"
 	
 	#### Find Icon & copy to archive
 
-	iconpath=`find $PROJECTDIR -type d -name '*.appiconset' -print | head -n 1`
+	iconpath=`find $ROOT_DIR -type d -name '*.appiconset' -print | head -n 1`
 	if [ -n "$iconpath" ];
 	then
 		icon=`find ${iconpath} -type f -print0 | xargs -0 ls -1S | head -n 1`
@@ -128,14 +149,14 @@ then
 	
 	#### Commit & push changes
 	
-	if [ -d "$PROJECTDIR/.git" ]
+	if [ -d "$ROOT_DIR/.git" ]
 	then
-		git add -A $PROJECTDIR
+		git add -A $ROOT_DIR
 		git commit -m "$CHANGES"
 		git push
-	elif [ -d "$PROJECTDIR/.hg" ]
+	elif [ -d "$ROOT_DIR/.hg" ]
 	then
-		hg addrem $PROJECTDIR
+		hg addrem $ROOT_DIR
 		hg commit -m "$CHANGES"
 		hg push
 	fi
