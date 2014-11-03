@@ -121,7 +121,7 @@ export DISPLAY_APPNAME
 CHANGES=`osascript -e "set changes to the text returned of (display dialog \"What has changed?\" default answer \"Fixes\")
 return changes"`
 
-if [ -n "$CHANGES" ];
+if [ -z "$CHANGES" ];
 then
 	echo "User Cancelled"
 	exit 0
