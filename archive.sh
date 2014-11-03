@@ -226,7 +226,7 @@ then
 	end tell"
 	fi
 	
-	echo "${greenColor}Done\n${endColor}"
+	echo -e "${greenColor}Done\n${endColor}"
 else
 	
 	#### Report Error
