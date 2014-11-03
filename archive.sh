@@ -41,6 +41,7 @@ CSSPATH="${RESOURCESPATH}/css"
 CSSARCHIVEPATH="$ARCHIVEPATH/css"
 ICONARCHIVEPATH="$ARCHIVEPATH/Icon.png"
 
+greenColor='\x1B[0;32m'
 redColor='\x1B[0;31m'
 endColor='\x1B[0m'
 
@@ -166,14 +167,26 @@ then
 	
 	if [ -d "$ROOT_DIR/.git" ]
 	then
-		git add -A $ROOT_DIR
-		git commit -m "$CHANGES"
-		git push
+		if [ $verbose -ne 1 ]; then
+			git add -A $ROOT_DIR > /dev/null
+			git commit -m "$CHANGES"  > /dev/null
+			git push  > /dev/null
+		else
+			git add -A $ROOT_DIR
+			git commit -m "$CHANGES"
+			git push
+		fi
 	elif [ -d "$ROOT_DIR/.hg" ]
 	then
-		hg addrem $ROOT_DIR
-		hg commit -m "$CHANGES"
-		hg push
+		if [ $verbose -ne 1 ]; then
+			hg addrem $ROOT_DIR  > /dev/null
+			hg commit -m "$CHANGES"  > /dev/null
+			hg push  > /dev/null
+		else
+			hg addrem $ROOT_DIR
+			hg commit -m "$CHANGES"
+			hg push
+		fi
 	fi
 	
 	#### Upload with Transmit
@@ -211,6 +224,7 @@ then
 	end tell"
 	fi
 	
+	echo "${greenColor}Done\n${endColor}"
 else
 	
 	#### Report Error
