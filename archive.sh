@@ -19,7 +19,7 @@ export COMPANYNAME="##your_company##"
 COMPANYEMAIL="##company_email##"
 REMOTEPATH="##your_server_remote_path##/${APPNAME}"
 TRANSMIT_FAVNAME="##your_transmit_fav##"
-
+ARCHIVEPATH="$HOME/Desktop/outbox/archive/${APPNAME}"
 
 ### Script Constants
 
@@ -28,7 +28,6 @@ export PUBLISH_IPA_URL="${PUBLISH_URL}/${APPNAME}.ipa"
 
 RESOURCESPATH="archive_resources"
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
-ARCHIVEPATH="$HOME/Desktop/outbox/archive/${APPNAME}"
 XCARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.xcarchive"
 IPAARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.ipa"
 PLISTPATH="${RESOURCESPATH}/app.plist"
