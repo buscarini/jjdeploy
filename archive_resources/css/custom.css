@@ -24,12 +24,22 @@ h3 code {
 	margin: 30px;
 	margin-left: 200px;
 	margin-right: 200px;
+	background: rgba(0,0,0,0.1);
+	border-radius: 10px;
 	padding: 20px;
 }
 
 .title h1 {
 	padding: 30px;
 	font-family: Futura, Helvetica, Arial, sans-serif;
+}
+
+.backgroundGradient {
+    background: linear-gradient(rgb(80,106,131), rgba(80,106,131,.5) 25%, rgba(80,106,131,.25) 50%, rgba(80,106,131,0));
+	position: fixed;
+	left: 0px;
+	width: 100%;
+	height: 100%;
 }
 
 .jumbotron {
@@ -49,7 +59,6 @@ h3 code {
 
 .jumbotron p {
   font-size: 34px;
-/*  font-weight: 300;*/
   line-height: 1.25;
   margin-bottom: 30px;
 }
@@ -89,8 +98,8 @@ only screen and (     -o-min-device-pixel-ratio: 2/1) {
 .marketing {
   text-align: center;
   color: #5a5a5a;
-/*  margin-bottom: 20px;*/
 }
+
 .marketing h1 {
   color:white;
   text-shadow: 1px 2px 4px rgba(0,0,0,.5), 0 0 10px rgba(0,0,0,.075);
@@ -123,9 +132,9 @@ only screen and (     -o-min-device-pixel-ratio: 2/1) {
 
 
 .footer {
-	position: fixed;
-	width: 100%;
-	bottom: 0px;
+  position: fixed;
+  width: 100%;
+  bottom: 0px;
   padding: 15px 0;
   text-align: center;
   background-color: #f5f5f5;
@@ -191,17 +200,6 @@ only screen and (     -o-min-device-pixel-ratio: 2/1) {
   .marketing h1 {
     font-size: 30px;
   }
-}
-
-/* Add additional stylesheets below
--------------------------------------------------- */
-
-.backgroundGradient {
-    background: linear-gradient(rgb(80,106,131), rgba(80,106,131,.5) 25%, rgba(80,106,131,.25) 50%, rgba(80,106,131,0));
-	position: fixed;
-	left: 0px;
-	width: 100%;
-	height: 100%;
 }
 
 /* Animations
