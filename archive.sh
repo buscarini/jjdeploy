@@ -11,9 +11,11 @@ WORKSPACE="##workspace_name##.xcworkspace"
 SCHEME="##scheme_for_archiving##"
 PROVPROFILE="##provisioning_profile_for_archiving##"
 PLISTFILE="##path_to_info.plist##"
+export PUBLISH_PLIST_LINK="##link_to_plist_file##"
 
 ### Constants
 
+export COMPANYNAME="##your_company##"
 REMOTEPATH="##your_server_remote_path##/${APPNAME}"
 TRANSMIT_FAVNAME="##your_transmit_fav##"
 
@@ -25,6 +27,7 @@ IPAARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.ipa"
 TEMPLATE_HTML_FILENAME="index_template.html"
 HTML_FILENAME="index.html"
 HTMLARCHIVEPATH="$ARCHIVEPATH/$HTML_FILENAME"
+CSSARCHIVEPATH="$ARCHIVEPATH/css"
 ICONARCHIVEPATH="$ARCHIVEPATH/Icon.png"
 
 redColor='\x1B[0;31m'
@@ -92,24 +95,32 @@ return changes"`
 
 export CHANGES
 
+export COMPANYNAME
+
 #### Fill template & generate html file
 
 perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "$TEMPLATE_HTML_FILENAME" > "${HTMLARCHIVEPATH}"
 
-#### Find Icon & copy to archive
-
-iconpath=`find $PROJECTDIR -type d -name '*.appiconset' -print | head -n 1`
-if [ -n "$iconpath" ];
+if [ -f $HTMLARCHIVEPATH ];
 then
-	icon=`find ${iconpath} -type f -print0 | xargs -0 ls -1S | head -n 1`
-	if [ -n "$icon" ];
+	#### Copy css files
+	cp -R $SCRIPTPATH/css/ $CSSARCHIVEPATH
+	
+	#### Find Icon & copy to archive
+
+	iconpath=`find $PROJECTDIR -type d -name '*.appiconset' -print | head -n 1`
+	if [ -n "$iconpath" ];
 	then
-		cp "$icon" "$ICONARCHIVEPATH"
+		icon=`find ${iconpath} -type f -print0 | xargs -0 ls -1S | head -n 1`
+		if [ -n "$icon" ];
+		then
+			cp "$icon" "$ICONARCHIVEPATH"
+		else
+			echo -e "${redColor} Error: Icon file not found. Please check that your image asset contains the app icon.\n${endColor}"
+		fi
 	else
-		echo -e "${redColor} Error: Icon file not found. Please check that your image asset contains the app icon.\n${endColor}"
+		echo -e "${redColor} Error: Icon file not found. Image assets are required to display the app icon.\n${endColor}"
 	fi
-else
-	echo -e "${redColor} Error: Icon file not found. Image assets are required to display the app icon.\n${endColor}"
 fi
 
 if [ -f $IPAARCHIVEPATH ] && [ -f $HTMLARCHIVEPATH ];
@@ -141,6 +152,7 @@ then
 				upload item at path \"${IPAARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
 				upload item at path \"${HTMLARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
 				upload item at path \"${ICONARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
+				upload item at path \"${CSSARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
 			end tell
 			close remote browser
 		end tell

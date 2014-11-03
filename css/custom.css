@@ -1,0 +1,249 @@
+body {
+  position: relative;
+}
+
+/* Code in headings */
+h3 code {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+/* Base class
+------------------------- */
+.icon {
+	display:block;
+	margin: 0 auto;
+	vertical-align: middle;
+	background: url(../Icon.png);
+	background-size: 100%;
+	width: 100px;
+	height: 100px;
+}
+
+.changelog {
+	margin: 30px;
+	margin-left: 200px;
+	margin-right: 200px;
+	padding: 20px;
+}
+
+.title h1 {
+	padding: 30px;
+	font-family: Futura, Helvetica, Arial, sans-serif;
+}
+
+.jumbotron {
+  position: relative;
+  padding: 30px 0;
+  color: #f5f5f5;
+  text-align: center;
+  padding-top:10%;
+}
+
+.jumbotron h1 {
+  font-size: 80px;
+  font-weight: bold;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.jumbotron p {
+  font-size: 34px;
+/*  font-weight: 300;*/
+  line-height: 1.25;
+  margin-bottom: 30px;
+}
+
+/* Link styles (used on .masthead-links as well) */
+.jumbotron a {
+  color: #fff;
+  color: rgba(255,255,255,0.9);
+  -webkit-transition: all .2s ease-in-out;
+     -moz-transition: all .2s ease-in-out;
+          transition: all .2s ease-in-out;
+}
+.jumbotron a:hover {
+  color: #fff;
+}
+
+/* Pattern overlay
+------------------------- */
+.jumbotron .container {
+  position: relative;
+  z-index: 2;
+}
+@media
+only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (   min--moz-device-pixel-ratio: 2),
+only screen and (     -o-min-device-pixel-ratio: 2/1) {
+
+  .jumbotron:after {
+    background-size: 150px 150px;
+  }
+
+}
+
+/* Marketing section of Overview
+-------------------------------------------------- */
+
+.marketing {
+  text-align: center;
+  color: #5a5a5a;
+/*  margin-bottom: 20px;*/
+}
+.marketing h1 {
+  color:white;
+  text-shadow: 1px 2px 4px rgba(0,0,0,.5), 0 0 10px rgba(0,0,0,.075);
+  margin: 0px 0 0px;
+  font-size: 60px;
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.marketing h2 {
+  font-weight: 200;
+}
+.marketing p {
+  font-size: 16px;
+  line-height: 1.5;
+  color: black;
+}
+.marketing .marketing-byline {
+  margin-bottom: 40px;
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.25;
+  color: #999;
+}
+.marketing-img {
+  display: block;
+  margin: 0 auto 30px;
+  max-height: 145px;
+}
+
+
+.footer {
+	position: fixed;
+	width: 100%;
+	bottom: 0px;
+  padding: 15px 0;
+  text-align: center;
+  background-color: #f5f5f5;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Tablet
+------------------------- */
+@media (max-width: 767px) {
+  /* Remove any padding from the body */
+  body {
+    padding-top: 0;
+  }
+
+  /* Widen masthead and social buttons to fill body padding */
+  .jumbotron {
+    padding: 40px 20px;
+    margin-top:   -20px; /* Offset bottom margin on .navbar */
+    margin-right: -20px;
+    margin-left:  -20px;
+  }
+  .marketing .span4 {
+    margin-bottom: 40px;
+  }
+  .footer {
+    margin: 0 -20px;
+  }
+  
+  .changelog {
+	  margin-left: 30px;
+	  margin-right: 30px;
+  }
+}
+
+/* Landscape phones
+------------------------- */
+@media (max-width: 480px) {
+  /* Remove padding above jumbotron */
+  body {
+    padding-top: 0;
+  }
+
+  /* Change up some type stuff */
+  h2 small {
+    display: block;
+  }
+
+  /* Downsize the jumbotrons */
+  .jumbotron h1 {
+    font-size: 45px;
+  }
+  .jumbotron p,
+  .jumbotron .btn {
+    font-size: 18px;
+  }
+  .jumbotron .btn {
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* Marketing on home */
+  .marketing h1 {
+    font-size: 30px;
+  }
+}
+
+/* Add additional stylesheets below
+-------------------------------------------------- */
+
+.backgroundGradient {
+    background: linear-gradient(rgb(80,106,131), rgba(80,106,131,.5) 25%, rgba(80,106,131,.25) 50%, rgba(80,106,131,0));
+	position: fixed;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+/* Animations
+-------------------------------------- */
+@-webkit-keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(-20px);
+    transform: translateY(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(-20px);
+    -ms-transform: translateY(-20px);
+    transform: translateY(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+.animated {
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+.fadeInDown {
+  -webkit-animation-name: fadeInDown;
+  animation-name: fadeInDown;
+}
