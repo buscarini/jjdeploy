@@ -134,10 +134,10 @@ export COMPANYNAME
 #### Fill template & generate html file
 echo "Filling templates…"
 
-perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "${TEMPLATE_HTML_FILENAME}" > "${HTMLARCHIVEPATH}"
+perl -p -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "${TEMPLATE_HTML_FILENAME}" > "${HTMLARCHIVEPATH}"
 
 ### Fill plist file
-perl -p -i -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "${PLISTPATH}" > "${PLISTARCHIVEPATH}"
+perl -p -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "${PLISTPATH}" > "${PLISTARCHIVEPATH}"
 
 if [ -f $HTMLARCHIVEPATH ];
 then
