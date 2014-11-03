@@ -1,18 +1,12 @@
 # JJDeployer
 
-Script to deploy iOS apps (enterprise or adhoc). Archives & exports your app as an ipa, commits your changes, generates an html &amp; uploads everything to a server.
+Script to deploy iOS apps (enterprise or adhoc). Archives &amp; exports your app as an ipa, commits and pushes your changes (git &amp; hg), generates an html &amp; uploads everything to a server. It can also optionally send an email when the process finishes correctly.
 
 ## Requirements
 
 - The app icon must be in an image asset for the script to be able to correctly find it and use it
 - [Transmit](http://panic.com/transmit/) is required to upload the files to a sever, but you can change the script to use a different method.
 - *Xcode* & xcodebuild. This script has been tested with Xcode 6.1 (6A1052d), but it should work with older versions of Xcode too.
-
-## How to use
-
-1. Copy *archive.sh* and *archive_resources_* to your project folder
-2. Open *archive.sh* and modify the project constants according to your project
-3. Open Terminal and run (from the project folder): ./archive.sh
 
 ## What does it do?
 
@@ -27,11 +21,19 @@ This is the process followed by the script, step by step:
 7. If it finds a git or mercurial repository in your project, it will add any changes, commit using your provided changes, and push
 8. Uploads the ipa, the html and the icon to your server
 
+## How to use
+
+1. Copy *archive.sh* and *archive_resources_* to your project folder
+2. Open *archive.sh* and modify the project constants according to your project
+3. Open Terminal and run (from the project folder): ./archive.sh
+
 ## Additional Options
 
 You can run archive.sh with these parameters:
 
 > *-v (or --verbose)* will display all the xcodebuild output
+
+> *-email* will send an email with the changes to the company email address in the script
 
 > *--version* Displays the current script version
 
