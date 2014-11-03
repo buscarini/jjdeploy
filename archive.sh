@@ -82,8 +82,8 @@ if [ ! -d  "${RESOURCESPATH}" ]; then
 	exit 1
 fi
 
-#### Build
-echo "Building…"
+#### Archive
+echo "Archiving…"
 
 if [ ! -d "$ARCHIVEPATH" ]; then
 	mkdir "$ARCHIVEPATH"
@@ -95,8 +95,10 @@ build="xcodebuild -workspace \"$WORKSPACE\" -scheme \"$SCHEME\" -destination gen
 
 eval $build
 
-#### Archive
-echo "Archiving…"
+rm "$IPAARCHIVEPATH" > /dev/null 2> /dev/null
+
+#### Export
+echo "Exporting ipa file…"
 
 archive="xcodebuild -exportArchive -exportFormat ipa -archivePath \"$XCARCHIVEPATH\" -exportPath \"$IPAARCHIVEPATH\" -exportProvisioningProfile \"$PROVPROFILE\""
 
