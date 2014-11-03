@@ -4,17 +4,19 @@ Script to deploy iOS apps (enterprise or adhoc). Archives & exports your app as 
 
 ## Requirements
 
-- The app Icon must be in an image asset for the script to be able to correctly find it and use it
+- The app icon must be in an image asset for the script to be able to correctly find it and use it
 - [Transmit](http://panic.com/transmit/) is required to upload the files to a sever, but you can change the script to use a different method.
-- Xcode & xcodebuild. This script has been tested with Xcode 6.1 (6A1052d), but it should work with older versions of Xcode too.
+- *Xcode* & xcodebuild. This script has been tested with Xcode 6.1 (6A1052d), but it should work with older versions of Xcode too.
 
 ## How to use
 
-1. Copy archive.sh to your project folder
-2. Open archive.sh and modify the project constants according to your project
+1. Copy *archive.sh*, *index_template.html* and *css* folder to your project folder
+2. Open *archive.sh* and modify the project constants according to your project
 3. Open Terminal and run (from the project folder): ./archive.sh
 
 ## What does it do?
+
+This is the process followed by the script, step by step:
 
 1. Creates the archive path
 2. Archives your app to a xcarchive file
