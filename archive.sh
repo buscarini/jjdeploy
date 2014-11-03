@@ -85,7 +85,7 @@ fi
 echo "Archiving…"
 
 if [ ! -d "$ARCHIVEPATH" ]; then
-	mkdir "$ARCHIVEPATH"
+	mkdir -p "$ARCHIVEPATH"
 fi
 
 build="xcodebuild -workspace \"$WORKSPACE\" -scheme \"$SCHEME\" -destination generic/platform=iOS archive -archivePath \"$XCARCHIVEPATH\""
