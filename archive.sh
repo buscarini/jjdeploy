@@ -170,9 +170,9 @@ then
 	if [ -d "$ROOT_DIR/.git" ]
 	then
 		if [ $verbose -ne 1 ]; then
-			git add -A $ROOT_DIR > /dev/null
-			git commit -m "$CHANGES"  > /dev/null
-			git push  > /dev/null
+			git add -A $ROOT_DIR
+			git commit -m "$CHANGES" -q
+			git push  > /dev/null -q
 		else
 			git add -A $ROOT_DIR
 			git commit -m "$CHANGES"
