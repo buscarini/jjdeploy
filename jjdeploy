@@ -2,12 +2,34 @@
 
 VERSION="0.0.4"
 
+### Constants
+
+CONFIG_FILE="jjdeploy.config"
+greenColor='\x1B[0;32m'
+redColor='\x1B[0;31m'
+endColor='\x1B[0m'
+RESOURCESPATH="jjdeploy_resources"
+SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+
 ### Functions
 
 function usage
 {
-    echo "Usage: jjdeploy.sh [config_file] [-v] [-h] [--version]"
+    echo "Usage: jjdeploy [init] [ [config_file=jjdeploy.config] [-v] [-h] [--version] ]\n Specify init without any other parameters to create an initial configuration file"
 }
+
+if [ $# -eq 1 ] && [ $1 = "init" ];
+then
+	
+	if [ -f "${PWD}/${CONFIG_FILE}" ];
+	then
+		echo -e "${redColor}Error: config file jjdeploy.config already exists.${endColor}"
+	else
+		cp "${SCRIPTPATH}/${CONFIG_FILE}" "${PWD}"
+	fi
+	
+	exit 0
+fi
 
 verbose=0
 send_email=0
@@ -49,8 +71,6 @@ exit 1
 export PUBLISH_PLIST_URL="${PUBLISH_URL}/${APPNAME}.plist"
 export PUBLISH_IPA_URL="${PUBLISH_URL}/${APPNAME}.ipa"
 
-RESOURCESPATH="jjdeploy_resources"
-SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 XCARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.xcarchive"
 IPAARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.ipa"
 PLISTPATH="${RESOURCESPATH}/app.plist"
@@ -62,10 +82,6 @@ HTMLARCHIVEPATH="$ARCHIVEPATH/$HTML_FILENAME"
 CSSPATH="${RESOURCESPATH}/css"
 CSSARCHIVEPATH="$ARCHIVEPATH/css"
 ICONARCHIVEPATH="$ARCHIVEPATH/Icon.png"
-
-greenColor='\x1B[0;32m'
-redColor='\x1B[0;31m'
-endColor='\x1B[0m'
 
 ### Commands
 

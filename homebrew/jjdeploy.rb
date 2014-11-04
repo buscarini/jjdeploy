@@ -8,7 +8,7 @@ class JJDeploy < Formula
   depends_on 'xcproj' => :recommended
 
   def install
-    prefix.install 'jjdeploy_resources'
+    prefix.install 'jjdeploy_resources','jjdeploy.config'
 
     bin.install 'jjdeploy'
   end
