@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.1.3"
+VERSION="0.1.4"
 
 ### Constants
 
@@ -101,7 +101,7 @@ TEMPLATE_HTML_FILENAME="${FINAL_RESOURCESPATH}/index_template.html"
 HTML_FILENAME="index.html"
 HTMLARCHIVEPATH="$ARCHIVEPATH/$HTML_FILENAME"
 CSSPATH="${FINAL_RESOURCESPATH}/css"
-CSSARCHIVEPATH="$ARCHIVEPATH"
+CSSARCHIVEPATH="$ARCHIVEPATH/css"
 ICONARCHIVEPATH="$ARCHIVEPATH/Icon.png"
 
 ### Commands
@@ -170,7 +170,7 @@ perl -p -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "${PLISTPATH}
 if [ -f $HTMLARCHIVEPATH ];
 then
 	#### Copy css files
-	cp -R "$CSSPATH" "$CSSARCHIVEPATH"
+	cp -R "$CSSPATH" "$ARCHIVEPATH"
 	
 	#### Find Icon & copy to archive
 	echo "Finding Icon…"
@@ -265,7 +265,7 @@ then
 	end tell"
 	fi
 	
-	echo -e "${greenColor}\n\nDone\n${endColor}"
+	echo -e "${greenColor}\nDone\n${endColor}"
 else
 	
 	#### Report Error
