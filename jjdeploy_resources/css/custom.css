@@ -18,13 +18,13 @@ h3 code {
 	background-size: 100%;
 	width: 100px;
 	height: 100px;
+	border-radius: 16px;
 }
 
 .changelog {
 	margin: 30px;
 	margin-left: 200px;
 	margin-right: 200px;
-	background: rgba(0,0,0,0.1);
 	border-radius: 10px;
 	padding: 20px;
 }

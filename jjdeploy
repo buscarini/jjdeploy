@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.0.9"
+VERSION="0.1.0"
 
 ### Constants
 
@@ -235,7 +235,7 @@ then
 	
 	#### Send email
 
-	if [ send_email -eq 1 ];
+	if [ $send_email -eq 1 ];
 	then
 	echo "Sending email…"
 	osascript -e "
