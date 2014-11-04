@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.1.0"
+VERSION="0.1.1"
 
 ### Constants
 
@@ -217,10 +217,17 @@ then
 	echo "Uploading…"
 	
 	osascript  -e "
+	on is_running(appName)
+		tell application \"System Events\" to (name of processes) contains appName
+	end is_running
+	
+	set wasRunning to is_running(\"Transmit\")
+	
 	tell application \"Transmit\"
 	set SuppressAppleScriptAlerts to true
 	set server to item 1 of (favorites whose name is \"${TRANSMIT_FAVNAME}\")
-		tell current tab of (make new document at end)
+		set doc to (make new document at end)
+		tell current tab of doc
 			connect to server
 			tell remote browser
 				upload item at path \"${IPAARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
@@ -231,6 +238,10 @@ then
 			end tell
 			close remote browser
 		end tell
+		close doc
+	if not wasRunning then
+		quit
+	end if
 	end tell"
 	
 	#### Send email
