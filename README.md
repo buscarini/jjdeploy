@@ -1,4 +1,4 @@
-# JJDeployer
+# JJDeploy
 
 Script to deploy iOS apps (enterprise or adhoc). Archives &amp; exports your app as an ipa, commits and pushes your changes (git &amp; hg), generates an html &amp; uploads everything to a server. It can also optionally send an email when the process finishes correctly.
 
@@ -23,13 +23,15 @@ This is the process followed by the script, step by step:
 
 ## How to use
 
-1. Copy *archive.sh* and *archive_resources_* to your project folder
-2. Open *archive.sh* and modify the project constants according to your project
-3. Open Terminal and run (from the project folder): ./archive.sh
+1. Copy *jjdeploy* and *jjdeploy_resources* to your project folder
+2. Open *jjdeploy* and modify the project constants according to your project
+3. Open Terminal and run (from the project folder): jjdeploy
 
 ## Additional Options
 
-You can run archive.sh with these parameters:
+You can run jjdeploy with these parameters:
+
+> *init* (Without any additional parameters: jjdeploy init). Creates a template config file with the name jjdeploy.config in the current directory
 
 > *-v (or --verbose)* will display all the xcodebuild output
 
@@ -46,4 +48,4 @@ You can run archive.sh with these parameters:
 
 ## License
 
-JJDeployer is released under the MIT license. See LICENSE for details.
+JJDeploy is released under the MIT license. See LICENSE for details.

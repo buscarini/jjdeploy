@@ -23,7 +23,7 @@ then
 	
 	if [ -f "${PWD}/${CONFIG_FILE}" ];
 	then
-		echo -e "${redColor}Error: config file jjdeploy.config already exists.${endColor}"
+		echo -e "${redColor}Error: config file 'jjdeploy.config' already exists.${endColor}"
 	else
 		cp "${SCRIPTPATH}/${CONFIG_FILE}" "${PWD}"
 	fi
