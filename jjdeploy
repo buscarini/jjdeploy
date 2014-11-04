@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.0.4"
+VERSION="0.0.6"
 
 ### Constants
 
@@ -9,7 +9,8 @@ greenColor='\x1B[0;32m'
 redColor='\x1B[0;31m'
 endColor='\x1B[0m'
 RESOURCESPATH="jjdeploy_resources"
-SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+SCRIPTINITIALPATH="$(cd "$(dirname "$0")" && pwd)"
+SCRIPTPATH=$SCRIPTINITIALPATH"/$(readlink "$0")"
 
 ### Functions
 
@@ -68,29 +69,39 @@ exit 1
 
 ### Script Constants
 
+#### Check resources path first (Use local, and if it doesn't exist use global)
+
+FINAL_RESOURCESPATH="${PWD}/${RESOURCESPATH}"
+if [ ! -d  "${FINAL_RESOURCESPATH}" ]; then
+	FINAL_RESOURCESPATH="${HOME}/.jjdeploy/${RESOURCESPATH}"
+	if [ ! -d  "${FINAL_RESOURCESPATH}" ]; then	
+		FINAL_RESOURCESPATH="${SCRIPTPATH}/${RESOURCESPATH}"
+	fi
+fi
+
+if [ ! -d  "${FINAL_RESOURCESPATH}" ]; then
+	echo -e "${redColor} Error: Archive Resources not found. Please check your installation of JJDeploy.\n${endColor}"
+	exit 1
+fi
+
 export PUBLISH_PLIST_URL="${PUBLISH_URL}/${APPNAME}.plist"
 export PUBLISH_IPA_URL="${PUBLISH_URL}/${APPNAME}.ipa"
 
 XCARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.xcarchive"
 IPAARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.ipa"
-PLISTPATH="${RESOURCESPATH}/app.plist"
+PLISTPATH="${FINAL_RESOURCESPATH}/app.plist"
 PLISTARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.plist"
 
-TEMPLATE_HTML_FILENAME="${RESOURCESPATH}/index_template.html"
+TEMPLATE_HTML_FILENAME="${FINAL_RESOURCESPATH}/index_template.html"
 HTML_FILENAME="index.html"
 HTMLARCHIVEPATH="$ARCHIVEPATH/$HTML_FILENAME"
-CSSPATH="${RESOURCESPATH}/css"
+CSSPATH="${FINAL_RESOURCESPATH}/css"
 CSSARCHIVEPATH="$ARCHIVEPATH/css"
 ICONARCHIVEPATH="$ARCHIVEPATH/Icon.png"
 
 ### Commands
 
 #### Check required resources are copied into the project folder
-
-if [ ! -d  "${RESOURCESPATH}" ]; then
-	echo -e "${redColor} Error: Archive Resources not found. Please copy '${RESOURCESPATH}' folder into the project folder and run the script again.\n${endColor}"
-	exit 1
-fi
 
 #### Archive
 echo "Archiving…"

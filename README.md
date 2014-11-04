@@ -23,9 +23,21 @@ This is the process followed by the script, step by step:
 
 ## How to use
 
-1. Copy *jjdeploy* and *jjdeploy_resources* to your project folder
-2. Open *jjdeploy* and modify the project constants according to your project
-3. Open Terminal and run (from the project folder): jjdeploy
+JJDeploy uses [homebrew](http://brew.sh "Homebrew — The missing package manager for OS X") for installation. You will need to install it first if you don't have it already.
+
+1. brew tap buscarini/formulae
+2. brew install jjdeploy
+
+Now you can run this in your project folder:
+
+3. jjdeploy init
+
+This creates a *jjdeploy.config* that you can fill with your project information.
+
+We recommend that you use [liftoff](https://github.com/thoughtbot/liftoff) or something similar, so you can have your config file populated automatically when creating new projects.
+
+The *jjdeploy_resources* folder contains all the css and html template files. JJDeploy uses the most specific resources folder it can find. You can have a copy in your project path and a global one in *~/.jjdeploy/jjdeploy_resources*. If these are not found then the default copy will be used.
+
 
 ## Additional Options
 
