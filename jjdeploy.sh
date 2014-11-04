@@ -26,7 +26,7 @@ ARCHIVEPATH="$HOME/Desktop/outbox/archive/${APPNAME}"
 export PUBLISH_PLIST_URL="${PUBLISH_URL}/${APPNAME}.plist"
 export PUBLISH_IPA_URL="${PUBLISH_URL}/${APPNAME}.ipa"
 
-RESOURCESPATH="archive_resources"
+RESOURCESPATH="jjdeploy_resources"
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 XCARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.xcarchive"
 IPAARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.ipa"
