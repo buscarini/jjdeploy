@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.1.1"
+VERSION="0.1.2"
 
 ### Constants
 
@@ -95,7 +95,7 @@ TEMPLATE_HTML_FILENAME="${FINAL_RESOURCESPATH}/index_template.html"
 HTML_FILENAME="index.html"
 HTMLARCHIVEPATH="$ARCHIVEPATH/$HTML_FILENAME"
 CSSPATH="${FINAL_RESOURCESPATH}/css"
-CSSARCHIVEPATH="$ARCHIVEPATH/css"
+CSSARCHIVEPATH="$ARCHIVEPATH"
 ICONARCHIVEPATH="$ARCHIVEPATH/Icon.png"
 
 ### Commands
@@ -259,7 +259,7 @@ then
 	end tell"
 	fi
 	
-	echo -e "${greenColor}Done\n${endColor}"
+	echo -e "${greenColor}\n\nDone\n${endColor}"
 else
 	
 	#### Report Error
