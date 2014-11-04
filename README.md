@@ -38,6 +38,10 @@ We recommend that you use [liftoff](https://github.com/thoughtbot/liftoff) or so
 
 The *jjdeploy_resources* folder contains all the css and html template files. JJDeploy uses the most specific resources folder it can find. You can have a copy in your project path and a global one in *~/.jjdeploy/jjdeploy_resources*. If these are not found then the default copy will be used.
 
+Finally, run *jjdeploy* in your project folder: 
+
+4. jjdeploy
+
 
 ## Additional Options
 
