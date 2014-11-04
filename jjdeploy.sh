@@ -2,24 +2,66 @@
 
 VERSION="0.0.4"
 
-### Project Constants (Need to be set by project)
+### Functions
 
-ROOT_DIR="."
-APPNAME="##project_name##"
-DISPLAY_APPNAME="##app_display_name##"
-WORKSPACE="##workspace_name##.xcworkspace"
-SCHEME="##scheme_for_archiving##"
-PROVPROFILE="##provisioning_profile_for_archiving##"
-PLISTFILE="##path_to_info.plist##"
-PUBLISH_URL="##publish_url_folder##"
+function usage
+{
+    echo "Usage: jjdeploy.sh [config_file] [-v] [-h] [--version]"
+}
 
-### Constants (Usually need to be set only once)
+verbose=0
+send_email=0
+config_file=""
 
-export COMPANYNAME="##your_company##"
-COMPANYEMAIL="##company_email##"
-REMOTEPATH="##your_server_remote_path##/${APPNAME}"
-TRANSMIT_FAVNAME="##your_transmit_fav##"
-ARCHIVEPATH="$HOME/Desktop/outbox/archive/${APPNAME}"
+while [ "$1" != "" ]; do
+	case $1 in
+		-v | --verbose )	verbose=1
+							shift
+							;;
+		-email )			send_email=1
+							shift
+							;;
+		--version )			echo $VERSION
+							exit
+							;;
+		-h | --help )		usage
+					  		exit
+					  	  	;;
+		* )            		config_file=$1
+							shift
+							exit 1
+	esac
+	shift
+done
+
+if [ -z ${config_file} ];
+then
+config_file="${PWD}/jjdeploy.config"
+fi
+
+source "${config_file}"
+
+echo $APPNAME
+exit 1
+
+# ### Project Constants (Need to be set by project)
+#
+# ROOT_DIR="."
+# APPNAME="##project_name##"
+# DISPLAY_APPNAME="##app_display_name##"
+# WORKSPACE="##workspace_name##.xcworkspace"
+# SCHEME="##scheme_for_archiving##"
+# PROVPROFILE="##provisioning_profile_for_archiving##"
+# PLISTFILE="##path_to_info.plist##"
+# PUBLISH_URL="##publish_url_folder##"
+#
+# ### Constants (Usually need to be set only once)
+#
+# export COMPANYNAME="##your_company##"
+# COMPANYEMAIL="##company_email##"
+# REMOTEPATH="##your_server_remote_path##/${APPNAME}"
+# TRANSMIT_FAVNAME="##your_transmit_fav##"
+# ARCHIVEPATH="$HOME/Desktop/outbox/archive/${APPNAME}"
 
 ### Script Constants
 
@@ -43,34 +85,6 @@ ICONARCHIVEPATH="$ARCHIVEPATH/Icon.png"
 greenColor='\x1B[0;32m'
 redColor='\x1B[0;31m'
 endColor='\x1B[0m'
-
-### Functions
-
-function usage
-{
-    echo "usage: ./archive.sh [ [-v] [-h] [--version] ]"
-}
-
-verbose=0
-send_email=0
-
-while [ "$1" != "" ]; do
-	case $1 in
-		-v | --verbose )	verbose=1
-							;;
-		-email )			send_email=1
-							;;
-		--version )			echo $VERSION
-							exit
-							;;
-		-h | --help )		usage
-					  		exit
-					  	  	;;
-		* )            		usage
-							exit 1
-	esac
-	shift
-done
 
 ### Commands
 
