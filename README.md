@@ -1,3 +1,5 @@
+![Logo](https://s3-eu-west-1.amazonaws.com/buscarini/jjdeploy.png "JJDeploy")
+
 # JJDeploy
 
 Script to deploy iOS apps (enterprise or adhoc). Archives &amp; exports your app as an ipa, commits and pushes your changes (git &amp; hg), generates an html &amp; uploads everything to a server. It can also optionally send an email when the process finishes correctly.
