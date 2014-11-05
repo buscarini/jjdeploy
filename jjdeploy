@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.1.4"
+VERSION="0.1.5"
 
 ### Constants
 
@@ -106,6 +106,19 @@ ICONARCHIVEPATH="$ARCHIVEPATH/Icon.png"
 
 ### Commands
 
+#### Request changes
+
+CHANGES=`osascript -e "set changes to the text returned of (display dialog \"What has changed?\" default answer \"Fixes\")
+return changes"`
+
+if [ -z "$CHANGES" ];
+then
+	echo "User Cancelled"
+	exit 0
+fi
+
+export CHANGES
+
 #### Check required resources are copied into the project folder
 
 #### Archive
@@ -141,21 +154,6 @@ export APP_VERSION=`/usr/libexec/PlistBuddy -c Print:CFBundleShortVersionString 
 export BUNDLE_ID=`/usr/libexec/PlistBuddy -c Print:CFBundleIdentifier "$PLISTFILE"`
 
 export DISPLAY_APPNAME
-
-export COMPANYNAME
-
-#### Request changes
-
-CHANGES=`osascript -e "set changes to the text returned of (display dialog \"What has changed?\" default answer \"Fixes\")
-return changes"`
-
-if [ -z "$CHANGES" ];
-then
-	echo "User Cancelled"
-	exit 0
-fi
-
-export CHANGES
 
 export COMPANYNAME
 

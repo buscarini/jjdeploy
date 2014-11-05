@@ -6,7 +6,9 @@ Script to deploy iOS apps (enterprise or adhoc). Archives &amp; exports your app
 
 - The app icon must be in an image asset for the script to be able to correctly find it and use it
 - [Transmit](http://panic.com/transmit/) is required to upload the files to a sever, but you can change the script to use a different method.
-- *Xcode* & xcodebuild. This script has been tested with Xcode 6.1 (6A1052d), but it should work with older versions of Xcode too.
+- [Xcode Command Line Tools](https://developer.apple.com/xcode/). You can install them using the command:
+
+	`$ xcode-select --install`
 
 ## What does it do?
 
@@ -25,12 +27,12 @@ This is the process followed by the script, step by step:
 
 JJDeploy uses [homebrew](http://brew.sh "Homebrew — The missing package manager for OS X") for installation. You will need to install it first if you don't have it already.
 
-1. brew tap buscarini/formulae
-2. brew install jjdeploy
+1. `$ brew tap buscarini/formulae`
+2. `$ brew install jjdeploy`
 
 Now you can run this in your project folder:
 
-3. jjdeploy init
+3. `$ jjdeploy init`
 
 This creates a *jjdeploy.config* that you can fill with your project information.
 
@@ -40,7 +42,7 @@ The *jjdeploy_resources* folder contains all the css and html template files. JJ
 
 Finally, run *jjdeploy* in your project folder: 
 
-4. jjdeploy
+4. `$ jjdeploy`
 
 
 ## Additional Options
