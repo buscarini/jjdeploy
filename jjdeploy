@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.1.6"
+VERSION="0.1.7"
 
 ### Constants
 
@@ -220,7 +220,7 @@ then
 	#### Upload with Transmit
 	echo "Uploading…"
 	
-	osascript  -e "
+	upload_result=`osascript  -e "
 	on is_running(appName)
 		tell application \"System Events\" to (name of processes) contains appName
 	end is_running
@@ -234,11 +234,26 @@ then
 		tell current tab of doc
 			connect to server
 			tell remote browser
-				upload item at path \"${IPAARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite
-				upload item at path \"${HTMLARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite
-				upload item at path \"${ICONARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite
-				upload item at path \"${CSSARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite
-				upload item at path \"${PLISTARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite
+				set result to (upload item at path \"${IPAARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
+				if not result then
+					return false
+				end if
+				set result to (upload item at path \"${HTMLARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
+				if not result then
+					return false
+				end if
+				set result to (upload item at path \"${ICONARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
+				if not result then
+					return false
+				end if
+				set result to (upload item at path \"${CSSARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
+				if not result then
+					return false
+				end if
+				set result to (upload item at path \"${PLISTARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
+				if not result then
+					return false
+				end if
 			end tell
 			close remote browser
 		end tell
@@ -246,7 +261,14 @@ then
 	if not wasRunning then
 		quit
 	end if
-	end tell"
+	return true
+	end tell"`
+	
+	if [ "$upload_result" = "false" ];
+	then
+		echo -e "${redColor} Error uplading file. Please check your FTPREMOTEPATH configuration and try again.\n${endColor}"
+		exit 1
+	fi
 	
 	#### Send email
 
