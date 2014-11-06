@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.1.5"
+VERSION="0.1.6"
 
 ### Constants
 
@@ -234,11 +234,11 @@ then
 		tell current tab of doc
 			connect to server
 			tell remote browser
-				upload item at path \"${IPAARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
-				upload item at path \"${HTMLARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
-				upload item at path \"${ICONARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
-				upload item at path \"${CSSARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
-				upload item at path \"${PLISTARCHIVEPATH}\" to \"${REMOTEPATH}\" with resume mode overwrite
+				upload item at path \"${IPAARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite
+				upload item at path \"${HTMLARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite
+				upload item at path \"${ICONARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite
+				upload item at path \"${CSSARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite
+				upload item at path \"${PLISTARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite
 			end tell
 			close remote browser
 		end tell
