@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.1.7"
+VERSION="0.1.8"
 
 ### Constants
 
@@ -108,7 +108,17 @@ ICONARCHIVEPATH="$ARCHIVEPATH/Icon.png"
 
 #### Request changes
 
-CHANGES=`osascript -e "set changes to the text returned of (display dialog \"What has changed?\" default answer \"Fixes\")
+CHANGES="Fixes"
+
+if [ -d "$ROOT_DIR/.git" ]
+then
+	CHANGES="$(echo -n `git log -1 --pretty=%B`)"
+elif [ -d "$ROOT_DIR/.hg" ]
+then
+	CHANGES="$(hg log -l 1 --template "{desc}")"
+fi
+
+CHANGES=`osascript -e "set changes to the text returned of (display dialog \"What has changed?\" default answer \"${CHANGES}\")
 return changes"`
 
 if [ -z "$CHANGES" ];
