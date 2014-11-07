@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.1.9"
+VERSION="0.2.0"
 
 ### Constants
 
@@ -30,14 +30,15 @@ then
 	else
 		cp "${SCRIPTPATH}/${CONFIG_FILE}" "${PWD}"
 		
-		workspaces="$(basename "$(find $PWD -iname "*.xcworkspace")")"
+		workspaces="$(basename "$(find $PWD -iname "*.xcworkspace" -type f -print0 | xargs -0 ls -1S | head -n 1)")"
 		workspacename=${workspaces%.xcworkspace}
 				
 		if [ -n "$workspacename" ];
 		then
 		sed -i '' "s/##project_name##/${workspacename}/g" "${CONFIG_FILE}"
 		
-		plist_file="$(find . -iname "${workspacename}-Info.plist")"
+		plist_file="$(find "${workspacename}-Info.plist" -type f -print0 | xargs -0 ls -1S | head -n 1)"
+		
 		plist_file="$(sed -e 's/[\/&]/\\&/g' <<< "$plist_file" )"
 		fi
 		
