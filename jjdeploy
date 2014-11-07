@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.1.8"
+VERSION="0.1.9"
 
 ### Constants
 
@@ -29,6 +29,26 @@ then
 		echo -e "${redColor}Error: config file 'jjdeploy.config' already exists.${endColor}"
 	else
 		cp "${SCRIPTPATH}/${CONFIG_FILE}" "${PWD}"
+		
+		workspaces="$(basename "$(find $PWD -iname "*.xcworkspace")")"
+		workspacename=${workspaces%.xcworkspace}
+				
+		if [ -n "$workspacename" ];
+		then
+		sed -i '' "s/##project_name##/${workspacename}/g" "${CONFIG_FILE}"
+		
+		plist_file="$(find . -iname "${workspacename}-Info.plist")"
+		plist_file="$(sed -e 's/[\/&]/\\&/g' <<< "$plist_file" )"
+		fi
+		
+		if [ -z "$plist_file" ];
+		then
+		plist_file='$APPNAME\/$APPNAME-Info.plist'
+		fi
+
+		sed -i '' "s/##plist_path##/${plist_file}/g" "${CONFIG_FILE}"
+		
+		echo -e "${greenColor} '${CONFIG_FILE}' created. Check it and fill any missing info to start using jjdeploy here. ${endColor}"
 	fi
 	
 	exit 0
@@ -307,3 +327,4 @@ else
 fi
 
 tput bel
+
