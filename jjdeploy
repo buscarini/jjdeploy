@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.2.0"
+VERSION="0.2.1"
 
 ### Constants
 
@@ -30,7 +30,7 @@ then
 	else
 		cp "${SCRIPTPATH}/${CONFIG_FILE}" "${PWD}"
 		
-		workspaces="$(basename "$(find $PWD -iname "*.xcworkspace" -type f -print0 | xargs -0 ls -1S | head -n 1)")"
+		workspaces="$(basename "$(find $PWD -iname "*.xcworkspace" -type d -print0 | xargs -0 ls -1S | head -n 1)")"
 		workspacename=${workspaces%.xcworkspace}
 				
 		if [ -n "$workspacename" ];
