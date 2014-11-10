@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.2.2"
+VERSION="0.2.3"
 
 ### Constants
 
@@ -10,9 +10,9 @@ redColor='\x1B[0;31m'
 endColor='\x1B[0m'
 RESOURCESPATH="jjdeploy_resources"
 SCRIPTPATH="$(cd "$(dirname "$0")" && pwd)"
-SCRIPTPATH="${SCRIPTPATH}""/$(readlink "$0")"
-SCRIPTPATH="$(dirname ${SCRIPTPATH})"
-SCRIPTPATH="${SCRIPTPATH}/../"
+# SCRIPTPATH="${SCRIPTPATH}""/$(readlink "$0")"
+# SCRIPTPATH="$(dirname ${SCRIPTPATH})"
+# SCRIPTPATH="${SCRIPTPATH}/../"
 
 ### Functions
 
@@ -30,18 +30,18 @@ then
 	else
 		cp "${SCRIPTPATH}/${CONFIG_FILE}" "${PWD}"
 		
-		workspaces="$(basename "$(find $PWD -iname "*.xcworkspace" -type d -print0 | xargs -0 ls -1S | head -n 1)")"
+		workspaces="$(basename "$(find $PWD -iname "*.xcworkspace" -type d -print0 | head -1)")"
 		workspacename=${workspaces%.xcworkspace}
 				
 		if [ -n "$workspacename" ];
 		then
 		sed -i '' "s/##project_name##/${workspacename}/g" "${CONFIG_FILE}"
 		
-		plist_file="$(find $PWD -iname "${workspacename}-Info.plist" -type f -print0 | xargs -0 ls -1S | head -n 1)"
+		plist_file="$(find . -iname "${workspacename}-Info.plist" -type f -print0 | head -1)"
 		
 		if [ -z "$plist_file" ];
 		then
-			plist_file="$(find $PWD -iname "${workspacename}*-Info.plist" -type f -print0 | xargs -0 ls -1S | head -n 1)"
+			plist_file="$(find . -iname "${workspacename}*-Info.plist" -type f -print0 | head -1)"
 		fi
 		
 		plist_file="$(sed -e 's/[\/&]/\\&/g' <<< "$plist_file" )"
@@ -170,6 +170,12 @@ build="xcodebuild -workspace \"$WORKSPACE\" -scheme \"$SCHEME\" -destination gen
 
 eval $build
 
+if [ ! -d $XCARCHIVEPATH ];
+then
+	echo -e "${redColor} Error archiving project. Please check xcodebuild output and fix any issues you find.\n${endColor}"
+	exit 1
+fi
+
 rm "$IPAARCHIVEPATH" > /dev/null 2> /dev/null
 
 #### Export
@@ -228,6 +234,7 @@ if [ -f $IPAARCHIVEPATH ] && [ -f $HTMLARCHIVEPATH ];
 then
 	
 	#### Commit & push changes
+	echo "Commit & push changes…"
 	
 	if [ -d "$ROOT_DIR/.git" ]
 	then
@@ -262,7 +269,8 @@ then
 	end is_running
 	
 	set wasRunning to is_running(\"Transmit\")
-	
+
+	with timeout of 600 seconds
 	tell application \"Transmit\"
 	set SuppressAppleScriptAlerts to true
 	set server to item 1 of (favorites whose name is \"${TRANSMIT_FAVNAME}\")
@@ -304,7 +312,8 @@ then
 		quit
 	end if
 	return true
-	end tell"`
+	end tell
+	end timeout"`
 	
 	if [ "$upload_result" = "false" ];
 	then
