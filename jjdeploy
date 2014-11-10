@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.2.1"
+VERSION="0.2.2"
 
 ### Constants
 
@@ -37,7 +37,12 @@ then
 		then
 		sed -i '' "s/##project_name##/${workspacename}/g" "${CONFIG_FILE}"
 		
-		plist_file="$(find "${workspacename}-Info.plist" -type f -print0 | xargs -0 ls -1S | head -n 1)"
+		plist_file="$(find $PWD -iname "${workspacename}-Info.plist" -type f -print0 | xargs -0 ls -1S | head -n 1)"
+		
+		if [ -z "$plist_file" ];
+		then
+			plist_file="$(find $PWD -iname "${workspacename}*-Info.plist" -type f -print0 | xargs -0 ls -1S | head -n 1)"
+		fi
 		
 		plist_file="$(sed -e 's/[\/&]/\\&/g' <<< "$plist_file" )"
 		fi
@@ -265,26 +270,32 @@ then
 		tell current tab of doc
 			connect to server
 			tell remote browser
-				set result to (upload item at path \"${IPAARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
-				if not result then
-					return false
-				end if
+			
 				set result to (upload item at path \"${HTMLARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
 				if not result then
 					return false
 				end if
-				set result to (upload item at path \"${ICONARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
-				if not result then
-					return false
-				end if
-				set result to (upload item at path \"${CSSARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
-				if not result then
-					return false
-				end if
+				
 				set result to (upload item at path \"${PLISTARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
 				if not result then
 					return false
 				end if
+				
+				set result to (upload item at path \"${IPAARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
+				if not result then
+					return false
+				end if
+				
+				set result to (upload item at path \"${CSSARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
+				if not result then
+					return false
+				end if
+				
+				set result to (upload item at path \"${ICONARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
+				if not result then
+					return false
+				end if
+				
 			end tell
 			close remote browser
 		end tell
