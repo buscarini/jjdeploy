@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.2.3"
+VERSION="0.2.4"
 
 ### Constants
 
@@ -10,9 +10,9 @@ redColor='\x1B[0;31m'
 endColor='\x1B[0m'
 RESOURCESPATH="jjdeploy_resources"
 SCRIPTPATH="$(cd "$(dirname "$0")" && pwd)"
-# SCRIPTPATH="${SCRIPTPATH}""/$(readlink "$0")"
-# SCRIPTPATH="$(dirname ${SCRIPTPATH})"
-# SCRIPTPATH="${SCRIPTPATH}/../"
+SCRIPTPATH="${SCRIPTPATH}""/$(readlink "$0")"
+SCRIPTPATH="$(dirname ${SCRIPTPATH})"
+SCRIPTPATH="${SCRIPTPATH}/../"
 
 ### Functions
 
