@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.2.4"
+VERSION="0.2.5"
 
 ### Constants
 
@@ -91,9 +91,15 @@ config_file="${PWD}/jjdeploy.config"
 fi
 
 if [ ! -f ${config_file} ];
-then
+then	
 	echo -e "${redColor} Error: No config file found. Check your current path or use jjdeploy init to create an initial template.\n${endColor}"
 	exit 1
+fi
+
+home_config_file="${HOME}/.jjdeploy/jjdeploy.config"
+if [ -f ${home_config_file} ];
+then
+	source "${home_config_file}"	
 fi
 
 source "${config_file}"
