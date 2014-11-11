@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.2.5"
+VERSION="0.2.6"
 
 ### Constants
 
@@ -13,6 +13,7 @@ SCRIPTPATH="$(cd "$(dirname "$0")" && pwd)"
 SCRIPTPATH="${SCRIPTPATH}""/$(readlink "$0")"
 SCRIPTPATH="$(dirname ${SCRIPTPATH})"
 SCRIPTPATH="${SCRIPTPATH}/../"
+SEND_EMAIL=false
 
 ### Functions
 
@@ -61,7 +62,7 @@ then
 fi
 
 verbose=0
-send_email=0
+param_send_email=0
 config_file=""
 
 while [ "$1" != "" ]; do
@@ -69,7 +70,7 @@ while [ "$1" != "" ]; do
 		-v | --verbose )	verbose=1
 							shift
 							;;
-		-email )			send_email=1
+		-email )			param_send_email=1
 							shift
 							;;
 		--version )			echo $VERSION
@@ -329,7 +330,7 @@ then
 	
 	#### Send email
 
-	if [ $send_email -eq 1 ];
+	if [ $param_send_email -eq 1 ] || [ "$SEND_EMAIL" = true ];
 	then
 	echo "Sending email…"
 	osascript -e "
