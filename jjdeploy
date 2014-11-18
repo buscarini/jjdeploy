@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.2.7"
+VERSION="0.2.8"
 
 ### Constants
 
@@ -96,6 +96,9 @@ then
 	echo -e "${redColor} Error: No config file found. Check your current path or use jjdeploy init to create an initial template.\n${endColor}"
 	exit 1
 fi
+
+# We use this to set the appname variable, then we open the home config, then we open this again to replace values in the home config
+source "${config_file}"
 
 home_config_file="${HOME}/.jjdeploy/jjdeploy.config"
 if [ -f ${home_config_file} ];
