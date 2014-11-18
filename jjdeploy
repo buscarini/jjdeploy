@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.2.8"
+VERSION="0.2.9"
 
 ### Constants
 
@@ -31,18 +31,18 @@ then
 	else
 		cp "${SCRIPTPATH}/${CONFIG_FILE}" "${PWD}"
 		
-		workspaces="$(basename "$(find $PWD -iname "*.xcworkspace" -type d -print0 | head -1)")"
+		workspaces="$(basename "$(find $PWD -iname "*.xcworkspace" -type d -not -path '*/\.*' -print0 | head -1)")"
 		workspacename=${workspaces%.xcworkspace}
 				
 		if [ -n "$workspacename" ];
 		then
 		sed -i '' "s/##project_name##/${workspacename}/g" "${CONFIG_FILE}"
 		
-		plist_file="$(find . -iname "${workspacename}-Info.plist" -type f -print0 | head -1)"
+		plist_file="$(find . -iname "${workspacename}-Info.plist" -type f -not -path '*/\.*' -print0 | head -1)"
 		
 		if [ -z "$plist_file" ];
 		then
-			plist_file="$(find . -iname "${workspacename}*-Info.plist" -type f -print0 | head -1)"
+			plist_file="$(find . -iname "${workspacename}*-Info.plist" -type f -not -path '*/\.*' -print0 | head -1)"
 		fi
 		
 		plist_file="$(sed -e 's/[\/&]/\\&/g' <<< "$plist_file" )"
@@ -225,10 +225,10 @@ then
 	#### Find Icon & copy to archive
 	echo "Finding Icon…"
 	
-	iconpath=`find $ROOT_DIR -type d -name '*.appiconset' -print | head -n 1`
+	iconpath=`find $ROOT_DIR -type d -not -path '*/\.*' -name '*.appiconset' -print | head -n 1`
 	if [ -n "$iconpath" ];
 	then
-		icon=`find ${iconpath} -type f -print0 | xargs -0 ls -1S | head -n 1`
+		icon=`find ${iconpath} -type f -not -path '*/\.*' -print0 | xargs -0 ls -1S | head -n 1`
 		if [ -n "$icon" ];
 		then
 			cp "$icon" "$ICONARCHIVEPATH"
