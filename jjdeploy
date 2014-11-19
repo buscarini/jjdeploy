@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.3.0"
+VERSION="0.3.1"
 
 ### Constants
 
@@ -193,7 +193,7 @@ if [ ! -d "$ARCHIVEPATH" ]; then
 	mkdir -p "$ARCHIVEPATH"
 fi
 
-build="xcodebuild -workspace \"$WORKSPACE\" -scheme \"$SCHEME\" -destination generic/platform=iOS archive -archivePath \"$XCARCHIVEPATH\""
+build="xcodebuild -workspace \"$ROOT_DIR/$WORKSPACE\" -scheme \"$SCHEME\" -destination generic/platform=iOS archive -archivePath \"$XCARCHIVEPATH\""
 
 [ $verbose -ne 1 ] && build=$build" | egrep -A 5 \"(error|warning):\""
 
@@ -220,9 +220,9 @@ rm -rf "$XCARCHIVEPATH"
 
 export CURRENT_TIMESTAMP=`date +"%d.%m.%Y %H:%M"`
 
-export APP_VERSION=`/usr/libexec/PlistBuddy -c Print:CFBundleShortVersionString "$PLISTFILE"`
+export APP_VERSION=`/usr/libexec/PlistBuddy -c Print:CFBundleShortVersionString "$ROOT_DIR/$PLISTFILE"`
 
-export BUNDLE_ID=`/usr/libexec/PlistBuddy -c Print:CFBundleIdentifier "$PLISTFILE"`
+export BUNDLE_ID=`/usr/libexec/PlistBuddy -c Print:CFBundleIdentifier "$ROOT_DIR/$PLISTFILE"`
 
 export DISPLAY_APPNAME
 
