@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.2.9"
+VERSION="0.3.0"
 
 ### Constants
 
@@ -19,7 +19,7 @@ SEND_EMAIL=false
 
 function usage
 {
-    echo "Usage: jjdeploy [init] [ [config_file=jjdeploy.config] [-v] [-h] [--version] ]\n Specify init without any other parameters to create an initial configuration file"
+    echo "Usage: jjdeploy [init] || [init resources] || [ [config_file=jjdeploy.config] [-v] [-h] [--version] ]\n Specify init without any other parameters to create an initial configuration file"
 }
 
 if [ $# -eq 1 ] && [ $1 = "init" ];
@@ -27,7 +27,8 @@ then
 	
 	if [ -f "${PWD}/${CONFIG_FILE}" ];
 	then
-		echo -e "${redColor}Error: config file 'jjdeploy.config' already exists.${endColor}"
+		echo -e "${redColor}Error: config file '${CONFIG_FILE}' already exists.${endColor}"
+		exit 1
 	else
 		cp "${SCRIPTPATH}/${CONFIG_FILE}" "${PWD}"
 		
@@ -56,6 +57,21 @@ then
 		sed -i '' "s/##plist_path##/${plist_file}/g" "${CONFIG_FILE}"
 		
 		echo -e "${greenColor} '${CONFIG_FILE}' created. Check it and fill any missing info to start using jjdeploy here. ${endColor}"
+	fi
+	
+	exit 0
+fi
+
+if [ $# -eq 2 ] && [ $1 = "init" ] && [ $2 = "resources" ];
+then
+	if [ -f "${PWD}/${RESOURCESPATH}" ];
+	then
+		echo -e "${redColor}Error: resources path '${RESOURCESPATH}' already exists.${endColor}"
+		exit 1
+	else
+		rm -rf "${PWD}/${RESOURCESPATH}"
+		cp -R "${SCRIPTPATH}/${RESOURCESPATH}" "${PWD}/${RESOURCESPATH}"
+		echo -e "${greenColor} '${RESOURCESPATH}' created. ${endColor}"
 	fi
 	
 	exit 0
@@ -114,9 +130,12 @@ source "${config_file}"
 
 FINAL_RESOURCESPATH="${PWD}/${RESOURCESPATH}"
 if [ ! -d  "${FINAL_RESOURCESPATH}" ]; then
-	FINAL_RESOURCESPATH="${HOME}/.jjdeploy/${RESOURCESPATH}"
+	FINAL_RESOURCESPATH="${PWD}/.jjdeploy/${RESOURCESPATH}"
 	if [ ! -d  "${FINAL_RESOURCESPATH}" ]; then	
-		FINAL_RESOURCESPATH="${SCRIPTPATH}/${RESOURCESPATH}"
+		FINAL_RESOURCESPATH="${HOME}/.jjdeploy/${RESOURCESPATH}"
+		if [ ! -d  "${FINAL_RESOURCESPATH}" ]; then	
+			FINAL_RESOURCESPATH="${SCRIPTPATH}/${RESOURCESPATH}"
+		fi
 	fi
 fi
 
@@ -220,6 +239,7 @@ perl -p -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "${PLISTPATH}
 if [ -f $HTMLARCHIVEPATH ];
 then
 	#### Copy css files
+	rm -rf "$ARCHIVEPATH/$CSSPATH"
 	cp -R "$CSSPATH" "$ARCHIVEPATH"
 	
 	#### Find Icon & copy to archive
