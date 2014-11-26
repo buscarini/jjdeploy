@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.3.2"
+VERSION="0.3.3"
 
 ### Constants
 
@@ -204,7 +204,7 @@ if [ ! -d "$ARCHIVEPATH" ]; then
 	mkdir -p "$ARCHIVEPATH"
 fi
 
-if [ -n "$workspacename" ];
+if [ -n "$WORKSPACE" ];
 then
 	build="xcodebuild -workspace \"$ROOT_DIR/$WORKSPACE\" -scheme \"$SCHEME\" -destination generic/platform=iOS archive -archivePath \"$XCARCHIVEPATH\""
 else
