@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.3.1"
+VERSION="0.3.2"
 
 ### Constants
 
@@ -35,6 +35,17 @@ then
 		workspaces="$(basename "$(find $PWD -iname "*.xcworkspace" -type d -not -path '*/\.*' -print0 | head -1)")"
 		workspacename=${workspaces%.xcworkspace}
 				
+		if [ -z "$workspacename" ];
+		then
+			project="$(basename "$(find $PWD -iname "*.xcodeproj" -type d -not -path '*/\.*' -print0 | head -1)")"
+			projectname=project%.xcodeproj}
+			workspacename=projectname
+		
+			sed -i '' "s/##project##/${project}/g" "${CONFIG_FILE}"	
+		else
+			sed -i '' "s/##project##//g" "${CONFIG_FILE}"	
+		fi
+
 		if [ -n "$workspacename" ];
 		then
 		sed -i '' "s/##project_name##/${workspacename}/g" "${CONFIG_FILE}"
@@ -193,7 +204,12 @@ if [ ! -d "$ARCHIVEPATH" ]; then
 	mkdir -p "$ARCHIVEPATH"
 fi
 
-build="xcodebuild -workspace \"$ROOT_DIR/$WORKSPACE\" -scheme \"$SCHEME\" -destination generic/platform=iOS archive -archivePath \"$XCARCHIVEPATH\""
+if [ -n "$workspacename" ];
+then
+	build="xcodebuild -workspace \"$ROOT_DIR/$WORKSPACE\" -scheme \"$SCHEME\" -destination generic/platform=iOS archive -archivePath \"$XCARCHIVEPATH\""
+else
+	build="xcodebuild -project \"$ROOT_DIR/$PROJECTNAME\" -scheme \"$SCHEME\" -destination generic/platform=iOS archive -archivePath \"$XCARCHIVEPATH\""
+fi
 
 [ $verbose -ne 1 ] && build=$build" | egrep -A 5 \"(error|warning):\""
 

@@ -63,6 +63,13 @@ h3 code {
   margin-bottom: 30px;
 }
 
+.jumbotron .btn {
+  font-size: 16px;
+}
+.jumbotron .btn {
+  padding: 10px 12px;
+}
+
 /* Link styles (used on .masthead-links as well) */
 .jumbotron a {
   color: #fff;
