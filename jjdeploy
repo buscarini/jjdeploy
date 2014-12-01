@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.3.3"
+VERSION="0.3.4"
 
 ### Constants
 
@@ -217,7 +217,7 @@ eval $build
 
 if [ ! -d $XCARCHIVEPATH ];
 then
-	echo -e "${redColor} Error archiving project. Please check xcodebuild output and fix any issues you find.\n${endColor}"
+	echo -e "${redColor} Error archiving project. Please check xcodebuild output and your config, and fix any issues you find.\n${endColor}"
 	exit 1
 fi
 
@@ -369,12 +369,14 @@ then
 	
 	#### Send email
 
+	EMAIL_BODY="${CHANGES}\n\nInstall from: ${PUBLISH_URL}"
+
 	if [ $param_send_email -eq 1 ] || [ "$SEND_EMAIL" = true ];
 	then
 	echo "Sending email…"
 	osascript -e "
 	tell application \"Mail\"
-		set theMessage to make new outgoing message with properties {subject:\"${APPNAME} ${APP_VERSION} Published\", content:\"${CHANGES}\", visible:true}
+		set theMessage to make new outgoing message with properties {subject:\"${APPNAME} ${APP_VERSION} Published\", content:\"${EMAIL_BODY}\", visible:true}
 		tell theMessage
 			make new to recipient with properties {name:\"${COMPANYNAME}\", address:\"${COMPANYEMAIL}\"}
 			send
