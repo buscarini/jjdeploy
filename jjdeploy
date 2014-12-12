@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.3.6"
+VERSION="0.3.7"
 
 ### Constants
 
@@ -386,7 +386,7 @@ then
 	echo "Sending email…"
 	osascript -e "
 	tell application \"Mail\"
-		set theMessage to make new outgoing message with properties {subject:\"${APPNAME} ${APP_VERSION} Published\", content:\"${EMAIL_BODY}\", visible:true}
+		set theMessage to make new outgoing message with properties {subject:\"${APPNAME} ${APP_VERSION} (${BUILD_NUMBER}) Published\", content:\"${EMAIL_BODY}\", visible:true}
 		tell theMessage
 			make new to recipient with properties {name:\"${EMAIL_NAME}\", address:\"${EMAIL}\"}
 			send
