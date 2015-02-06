@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.3.7"
+VERSION="0.3.8"
 
 ### Constants
 
@@ -19,7 +19,7 @@ SEND_EMAIL=false
 
 function usage
 {
-    echo "Usage: jjdeploy [init] || [init resources] || [ [config_file=jjdeploy.config] [-v] [-h] [--version] ]\n Specify init without any other parameters to create an initial configuration file"
+    echo "Usage: jjdeploy [init] || [init resources] || [ [config_file] [-v] [-h] [--version] ]\n Specify init without any other parameters to create an initial configuration file"
 }
 
 if [ $# -eq 1 ] && [ $1 = "init" ];
@@ -108,7 +108,6 @@ while [ "$1" != "" ]; do
 					  	  	;;
 		* )            		config_file=$1
 							shift
-							exit 1
 	esac
 	shift
 done
