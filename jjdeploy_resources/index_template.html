@@ -23,7 +23,10 @@
 			<div class="row fluid title">
 				<h1>${DISPLAY_APPNAME}</h1>
 			</div>
-			<div class="row fluid"><a class="btn btn-success" href="itms-services://?action=download-manifest&url=${PUBLISH_PLIST_URL}">Install ${APP_VERSION} (build ${BUILD_NUMBER})</a>
+			<div id="install_message" class="row fluid" style="display: none;">
+				App is installing. Check your home screen for progress.
+			</div>
+			<div class="row fluid"><a onclick="document.getElementById('install_message').style.display = 'block'" class="btn btn-success" href="itms-services://?action=download-manifest&url=${PUBLISH_PLIST_URL}">Install ${APP_VERSION} (build ${BUILD_NUMBER})</a>
 			</div>
 			<div class="changelog">
 				<b>Latest Changes:</b>

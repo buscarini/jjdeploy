@@ -252,3 +252,7 @@ only screen and (     -o-min-device-pixel-ratio: 2/1) {
   -webkit-animation-name: fadeInDown;
   animation-name: fadeInDown;
 }
+
+#install_message {
+	padding: 10px;
+}
