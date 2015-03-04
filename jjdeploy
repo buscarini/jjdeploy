@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.4.1"
+VERSION="0.4.2"
 
 ### Constants
 
@@ -197,6 +197,8 @@ then
 	echo "User Cancelled"
 	exit 0
 fi
+
+echo $CHANGES > $messageTempFile
 
 export CHANGES
 
