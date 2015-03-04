@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.4.0"
+VERSION="0.4.1"
 
 ### Constants
 
@@ -14,7 +14,7 @@ SCRIPTPATH="${SCRIPTPATH}""/$(readlink "$0")"
 SCRIPTPATH="$(dirname ${SCRIPTPATH})"
 SCRIPTPATH="${SCRIPTPATH}/../"
 SEND_EMAIL=false
-readonly messageTempFile = "${PWD}/.jjdeploy_tmp_message"
+messageTempFile="${PWD}/.jjdeploy_tmp_message"
 
 ### Functions
 
