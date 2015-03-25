@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.4.3"
+VERSION="0.4.4"
 
 ### Constants
 
@@ -424,6 +424,7 @@ then
 	then
 		sendEmail "${APPNAME} ${APP_VERSION} (${BUILD_NUMBER}) Published" $EMAIL_BODY $EMAIL_NAME $EMAIL
 	elif [ $param_send_email -eq -1 ] && [ "$SEND_EMAIL" = true ];
+	then
 		sendEmail "${APPNAME} ${APP_VERSION} (${BUILD_NUMBER}) Published" $EMAIL_BODY $EMAIL_NAME $EMAIL
 	fi
 	
