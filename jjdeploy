@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.4.2"
+VERSION="0.4.3"
 
 ### Constants
 
@@ -18,9 +18,27 @@ messageTempFile="${PWD}/.jjdeploy_tmp_message"
 
 ### Functions
 
-function usage
+function usage ()
 {
     echo "Usage: jjdeploy [init] || [init resources] || [ [config_file] [-v] [-h] [--version] ]\n Specify init without any other parameters to create an initial configuration file"
+}
+
+function sendEmail ()
+{
+	subject=$1
+	body=$2
+	email_name=$3
+	email=$4
+	
+	echo "Sending email…"
+	osascript -e "
+	tell application \"Mail\"
+		set theMessage to make new outgoing message with properties {subject:\"${APPNAME} ${APP_VERSION} (${BUILD_NUMBER}) Published\", content:\"${EMAIL_BODY}\", visible:true}
+		tell theMessage
+			make new to recipient with properties {name:\"${EMAIL_NAME}\", address:\"${EMAIL}\"}
+			send
+		end tell
+	end tell"
 }
 
 if [ $# -eq 1 ] && [ $1 = "init" ];
@@ -90,7 +108,7 @@ then
 fi
 
 verbose=0
-param_send_email=0
+param_send_email=-1
 config_file=""
 
 while [ "$1" != "" ]; do
@@ -99,6 +117,9 @@ while [ "$1" != "" ]; do
 							shift
 							;;
 		-email )			param_send_email=1
+							shift
+							;;
+		-noemail )			param_send_email=0
 							shift
 							;;
 		--version )			echo $VERSION
@@ -151,7 +172,7 @@ if [ ! -d  "${FINAL_RESOURCESPATH}" ]; then
 fi
 
 if [ ! -d  "${FINAL_RESOURCESPATH}" ]; then
-	echo -e "${redColor} Error: Archive Resources not found. Please check your installation of JJDeploy.\n${endColor}"
+	echo -e "${redColor} Error: Archive Resources not found at ${FINAL_RESOURCESPATH}. Please check your installation of JJDeploy.\n${endColor}"
 	exit 1
 fi
 
@@ -171,6 +192,14 @@ CSSARCHIVEPATH="$ARCHIVEPATH/css"
 ICONARCHIVEPATH="$ARCHIVEPATH/Icon.png"
 
 ### Commands
+
+#### Check plist file exists
+if [ ! -f "$ROOT_DIR/$PLISTFILE" ];
+then
+	echo -e "${redColor} Error: no plist file found at \"$ROOT_DIR/$PLISTFILE\"\n${endColor}"
+	exit 0
+fi
+
 
 #### Request changes
 
@@ -391,17 +420,11 @@ then
 
 	EMAIL_BODY="${CHANGES}\n\nInstall from: ${PUBLISH_URL}"
 
-	if [ $param_send_email -eq 1 ] || [ "$SEND_EMAIL" = true ];
+	if [ $param_send_email -eq 1 ]
 	then
-	echo "Sending email…"
-	osascript -e "
-	tell application \"Mail\"
-		set theMessage to make new outgoing message with properties {subject:\"${APPNAME} ${APP_VERSION} (${BUILD_NUMBER}) Published\", content:\"${EMAIL_BODY}\", visible:true}
-		tell theMessage
-			make new to recipient with properties {name:\"${EMAIL_NAME}\", address:\"${EMAIL}\"}
-			send
-		end tell
-	end tell"
+		sendEmail "${APPNAME} ${APP_VERSION} (${BUILD_NUMBER}) Published" $EMAIL_BODY $EMAIL_NAME $EMAIL
+	elif [ $param_send_email -eq -1 ] && [ "$SEND_EMAIL" = true ];
+		sendEmail "${APPNAME} ${APP_VERSION} (${BUILD_NUMBER}) Published" $EMAIL_BODY $EMAIL_NAME $EMAIL
 	fi
 	
 	echo -e "${greenColor}\nDone\n${endColor}"
