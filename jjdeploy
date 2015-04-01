@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.4.4"
+VERSION="0.4.5"
 
 ### Constants
 
@@ -189,7 +189,9 @@ HTML_FILENAME="index.html"
 HTMLARCHIVEPATH="$ARCHIVEPATH/$HTML_FILENAME"
 CSSPATH="${FINAL_RESOURCESPATH}/css"
 CSSARCHIVEPATH="$ARCHIVEPATH/css"
-ICONARCHIVEPATH="$ARCHIVEPATH/Icon.png"
+ICONFILENAME="Icon.png"
+ICONARCHIVEPATH="$ARCHIVEPATH/$ICONFILENAME"
+
 
 ### Commands
 
@@ -275,6 +277,7 @@ export CURRENT_TIMESTAMP=`date +"%d.%m.%Y %H:%M"`
 export APP_VERSION=`/usr/libexec/PlistBuddy -c Print:CFBundleShortVersionString "$ROOT_DIR/$PLISTFILE"`
 export BUILD_NUMBER=`/usr/libexec/PlistBuddy -c Print:CFBundleVersion "$ROOT_DIR/$PLISTFILE"`
 export BUNDLE_ID=`/usr/libexec/PlistBuddy -c Print:CFBundleIdentifier "$ROOT_DIR/$PLISTFILE"`
+export ICON_URL="${PUBLISH_URL}/$ICONFILENAME"
 
 export DISPLAY_APPNAME
 

@@ -13,6 +13,19 @@
 					<key>url</key>
 					<string>${PUBLISH_IPA_URL}</string>
 				</dict>
+				<dict>
+					<key>kind</key>
+					<string>display-image</string>
+					<key>url</key>
+					<string>${ICON_URL}</string>
+				</dict>
+
+				<dict>
+					<key>kind</key>
+					<string>full-size-image</string>
+					<key>url</key>
+					<string>${ICON_URL}</string>
+				</dict>
 			</array>
 			<key>metadata</key>
 			<dict>
@@ -24,6 +37,8 @@
 				<string>software</string>
 				<key>title</key>
 				<string>${DISPLAY_APPNAME}</string>
+				<key>subtitle</key>
+                <string>${COMPANYNAME}</string>
 			</dict>
 		</dict>
 	</array>
