@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.4.6"
+VERSION="0.4.7"
 
 ### Constants
 
@@ -348,6 +348,8 @@ then
 	#### Upload with Transmit
 	echo "Uploading…"
 	
+	remoteFolder=$(basename "${FTPREMOTEPATH}")
+	
 	upload_result=`osascript  -e "
 	on is_running(appName)
 		tell application \"System Events\" to (name of processes) contains appName
@@ -364,7 +366,7 @@ then
 			connect to server
 			tell remote browser
 			
-				create folder named \"${FTPREMOTEPATH}\"
+				create folder named \"$remoteFolder\"
 			
 				set result to (upload item at path \"${HTMLARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
 				if not result then
