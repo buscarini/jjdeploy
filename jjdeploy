@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.4.7"
+VERSION="0.4.8"
 
 ### Constants
 
@@ -360,6 +360,7 @@ then
 	with timeout of 600 seconds
 	tell application \"Transmit\"
 	set SuppressAppleScriptAlerts to true
+	set suppress errors to true
 	set server to item 1 of (favorites whose name is \"${TRANSMIT_FAVNAME}\")
 		set doc to (make new document at end)
 		tell current tab of doc
