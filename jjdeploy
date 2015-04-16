@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.4.8"
+VERSION="0.4.9"
 
 ### Constants
 
@@ -145,6 +145,8 @@ then
 	exit 1
 fi
 
+echo "Reading config files…"
+
 # We use this to set the appname variable, then we open the home config, then we open this again to replace values in the home config
 source "${config_file}"
 
@@ -220,8 +222,15 @@ then
 	CHANGES=$(<$messageTempFile)
 fi
 
-CHANGES=`osascript -e "set changes to the text returned of (display dialog \"What has changed?\" default answer \"${CHANGES}\")
-return changes"`
+if [ $verbose -eq 1 ]; then
+	echo "Asking for changes…"
+fi
+
+CHANGES=`osascript \
+  -e "on run(argv)" \
+  -e "return the text returned of (display dialog \"What has changed?\" default answer item 1 of argv)" \
+  -e "end" \
+  -- "$CHANGES"`
 
 if [ -z "$CHANGES" ];
 then
