@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.5.2"
+VERSION="0.5.3"
 
 ### Constants
 
@@ -14,6 +14,7 @@ SCRIPTPATH="${SCRIPTPATH}""/$(readlink "$0")"
 SCRIPTPATH="$(dirname ${SCRIPTPATH})"
 SCRIPTPATH="${SCRIPTPATH}/../"
 SEND_EMAIL=false
+DISABLE_SOURCE_CONTROL=0
 messageTempFile="${PWD}/.jjdeploy_tmp_message"
 
 ### Functions
@@ -39,6 +40,84 @@ function sendEmail ()
 			send
 		end tell
 	end tell"
+}
+
+function upload ()
+{
+	FTPREMOTEPATH=$1
+	TRANSMIT_FAVNAME=$2
+	HTMLARCHIVEPATH=$3
+	PLISTARCHIVEPATH=$4
+	IPAARCHIVEPATH=$5
+	CSSARCHIVEPATH=$6
+	ICONARCHIVEPATH=$7
+	
+	#### Upload with Transmit
+	echo "Uploading…"
+	
+	remoteFolder=$(basename "${FTPREMOTEPATH}")
+	
+	upload_result=`osascript  -e "
+	on is_running(appName)
+		tell application \"System Events\" to (name of processes) contains appName
+	end is_running
+	
+	set wasRunning to is_running(\"Transmit\")
+
+	with timeout of 600 seconds
+	tell application \"Transmit\"
+	set SuppressAppleScriptAlerts to true
+	set suppress errors to true
+	set server to item 1 of (favorites whose name is \"${TRANSMIT_FAVNAME}\")
+		set doc to (make new document at end)
+		tell current tab of doc
+			connect to server
+			tell remote browser
+			
+				create folder named \"$remoteFolder\"
+			
+				set result to (upload item at path \"${HTMLARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
+				if not result then
+					return false
+				end if
+				
+				set result to (upload item at path \"${PLISTARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
+				if not result then
+					return false
+				end if
+				
+				set result to (upload item at path \"${IPAARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
+				if not result then
+					return false
+				end if
+				
+				set result to (upload item at path \"${CSSARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
+				if not result then
+					return false
+				end if
+				
+				set result to (upload item at path \"${ICONARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
+				if not result then
+					return false
+				end if
+				
+			end tell
+			close remote browser
+		end tell
+		close doc
+	if not wasRunning then
+		quit
+	end if
+	return true
+	end tell
+	end timeout"`
+	
+	if [ "$upload_result" = "false" ];
+	then
+		echo -e "${redColor} Error uplading file. Please check your FTPREMOTEPATH configuration and try again.\n${endColor}"
+		exit 1
+	fi
+
 }
 
 if [ $# -eq 1 ] && [ $1 = "init" ];
@@ -200,72 +279,7 @@ ICONARCHIVEPATH="$ARCHIVEPATH/$ICONFILENAME"
 
 if [ $only_upload -eq 1 ];
 then
-	#### Upload with Transmit
-	echo "Uploading…"
-	
-	remoteFolder=$(basename "${FTPREMOTEPATH}")
-	
-	upload_result=`osascript  -e "
-	on is_running(appName)
-		tell application \"System Events\" to (name of processes) contains appName
-	end is_running
-	
-	set wasRunning to is_running(\"Transmit\")
-
-	with timeout of 600 seconds
-	tell application \"Transmit\"
-	set SuppressAppleScriptAlerts to true
-	set suppress errors to true
-	set server to item 1 of (favorites whose name is \"${TRANSMIT_FAVNAME}\")
-		set doc to (make new document at end)
-		tell current tab of doc
-			connect to server
-			tell remote browser
-			
-				create folder named \"$remoteFolder\"
-			
-				set result to (upload item at path \"${HTMLARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
-				if not result then
-					return false
-				end if
-				
-				set result to (upload item at path \"${PLISTARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
-				if not result then
-					return false
-				end if
-				
-				set result to (upload item at path \"${IPAARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
-				if not result then
-					return false
-				end if
-				
-				set result to (upload item at path \"${CSSARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
-				if not result then
-					return false
-				end if
-				
-				set result to (upload item at path \"${ICONARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
-				if not result then
-					return false
-				end if
-				
-			end tell
-			close remote browser
-		end tell
-		close doc
-	if not wasRunning then
-		quit
-	end if
-	return true
-	end tell
-	end timeout"`
-	
-	if [ "$upload_result" = "false" ];
-	then
-		echo -e "${redColor} Error uplading file. Please check your FTPREMOTEPATH configuration and try again.\n${endColor}"
-		exit 1
-	fi
-	
+	upload "$FTPREMOTEPATH" "$TRANSMIT_FAVNAME" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH" 
 	exit 0
 fi
 
@@ -436,7 +450,7 @@ then
 	
 	remoteFolder=$(basename "${FTPREMOTEPATH}")
 	
-	upload
+	upload "$FTPREMOTEPATH" "$TRANSMIT_FAVNAME" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH" 
 	
 	#### Remove temp message file
 	rm "$messageTempFile"
