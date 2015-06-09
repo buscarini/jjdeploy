@@ -445,11 +445,7 @@ then
 		fi
 	fi
 	
-	#### Upload with Transmit
-	echo "Uploading…"
-	
-	remoteFolder=$(basename "${FTPREMOTEPATH}")
-	
+	#### Upload with Transmit		
 	upload "$FTPREMOTEPATH" "$TRANSMIT_FAVNAME" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH" 
 	
 	#### Remove temp message file
