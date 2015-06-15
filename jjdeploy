@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.5.3"
+VERSION="0.5.4"
 
 ### Constants
 
@@ -15,6 +15,7 @@ SCRIPTPATH="$(dirname ${SCRIPTPATH})"
 SCRIPTPATH="${SCRIPTPATH}/../"
 SEND_EMAIL=false
 DISABLE_SOURCE_CONTROL=0
+XCODEPARAMS=""
 messageTempFile="${PWD}/.jjdeploy_tmp_message"
 
 ### Functions
@@ -53,7 +54,7 @@ function upload ()
 	ICONARCHIVEPATH=$7
 	
 	#### Upload with Transmit
-	echo "Uploading…"
+	echo "Uploading to ${FTPREMOTEPATH} …"
 	
 	remoteFolder=$(basename "${FTPREMOTEPATH}")
 	
@@ -214,7 +215,6 @@ while [ "$1" != "" ]; do
 		* )            		config_file=$1
 							shift
 	esac
-	shift
 done
 
 if [ -z ${config_file} ];
@@ -228,7 +228,7 @@ then
 	exit 1
 fi
 
-echo "Reading config files…"
+echo "Reading config file ${config_file} …"
 
 # We use this to set the appname variable, then we open the home config, then we open this again to replace values in the home config
 source "${config_file}"
@@ -280,6 +280,8 @@ ICONARCHIVEPATH="$ARCHIVEPATH/$ICONFILENAME"
 if [ $only_upload -eq 1 ];
 then
 	upload "$FTPREMOTEPATH" "$TRANSMIT_FAVNAME" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH" 
+	echo -e "${greenColor}\nDone\n${endColor}"
+	
 	exit 0
 fi
 
@@ -341,9 +343,9 @@ fi
 
 if [ -n "$WORKSPACE" ];
 then
-	build="xcodebuild -workspace \"$ROOT_DIR/$WORKSPACE\" -scheme \"$SCHEME\" -destination generic/platform=iOS archive -archivePath \"$XCARCHIVEPATH\""
+	build="xcodebuild -workspace \"$ROOT_DIR/$WORKSPACE\" -scheme \"$SCHEME\" -destination generic/platform=iOS archive -archivePath \"$XCARCHIVEPATH\" ${XCODEPARAMS}"
 else
-	build="xcodebuild -project \"$ROOT_DIR/$PROJECTNAME\" -scheme \"$SCHEME\" -destination generic/platform=iOS archive -archivePath \"$XCARCHIVEPATH\""
+	build="xcodebuild -project \"$ROOT_DIR/$PROJECTNAME\" -scheme \"$SCHEME\" -destination generic/platform=iOS archive -archivePath \"$XCARCHIVEPATH\" ${XCODEPARAMS}"
 fi
 
 [ $verbose -ne 1 ] && build=$build" | egrep -A 5 \"(error|warning):\""
@@ -445,7 +447,9 @@ then
 		fi
 	fi
 	
-	#### Upload with Transmit		
+	#### Upload with Transmit
+	remoteFolder=$(basename "${FTPREMOTEPATH}")
+	
 	upload "$FTPREMOTEPATH" "$TRANSMIT_FAVNAME" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH" 
 	
 	#### Remove temp message file
