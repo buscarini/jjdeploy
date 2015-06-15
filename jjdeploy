@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.5.4"
+VERSION="0.5.5"
 
 ### Constants
 
@@ -22,7 +22,7 @@ messageTempFile="${PWD}/.jjdeploy_tmp_message"
 
 function usage ()
 {
-    echo "Usage: jjdeploy init || init resources || upload || [ [config_file] [-v] [-h] [--version] ]\n Specify init without any other parameters to create an initial configuration file"
+    echo "Usage: jjdeploy init || init resources || upload [config_file] || [ [config_file] [-v] [-h] [--version] [-m \"message\"] ]\n Specify init without any other parameters to create an initial configuration file"
 }
 
 function sendEmail ()
@@ -191,6 +191,8 @@ verbose=0
 param_send_email=-1
 config_file=""
 only_upload=0
+interactive=1
+message=""
 
 while [ "$1" != "" ]; do
 	case $1 in
@@ -209,6 +211,15 @@ while [ "$1" != "" ]; do
 		-h | --help )		usage
 					  		exit
 					  	  	;;
+		-m )				shift
+							message=$1
+							interactive=0
+							if [ ! -n "$message" ]; then
+								echo -e "${redColor}Error: no message specified\n${endColor}"
+								exit 1
+							fi
+							shift
+							;;
 		upload )			only_upload=1
 							shift
 							;;
@@ -297,38 +308,42 @@ fi
 
 #### Request changes
 
-CHANGES="Fixes"
+if [ $interactive -eq 1 ]; then
+	CHANGES="Fixes"
 
-if [ -d "$ROOT_DIR/.git" ]
-then
-	CHANGES="$(echo -n `git log -1 --pretty=%B`)"
-elif [ -d "$ROOT_DIR/.hg" ]
-then
-	CHANGES="$(hg log -l 1 --template "{desc}")"
+	if [ -d "$ROOT_DIR/.git" ]
+	then
+		CHANGES="$(echo -n `git log -1 --pretty=%B`)"
+	elif [ -d "$ROOT_DIR/.hg" ]
+	then
+		CHANGES="$(hg log -l 1 --template "{desc}")"
+	fi
+
+	if [ -f $messageTempFile ]
+	then
+		CHANGES=$(<$messageTempFile)
+	fi
+
+	if [ $verbose -eq 1 ]; then
+		echo "Asking for changes…"
+	fi
+
+	CHANGES=`osascript \
+	  -e "on run(argv)" \
+	  -e "return the text returned of (display dialog \"What has changed?\" default answer item 1 of argv)" \
+	  -e "end" \
+	  -- "$CHANGES"`
+
+	if [ -z "$CHANGES" ];
+	then
+		echo "User Cancelled"
+		exit 0
+	fi
+
+	echo $CHANGES > $messageTempFile
+else
+	CHANGES=$message
 fi
-
-if [ -f $messageTempFile ]
-then
-	CHANGES=$(<$messageTempFile)
-fi
-
-if [ $verbose -eq 1 ]; then
-	echo "Asking for changes…"
-fi
-
-CHANGES=`osascript \
-  -e "on run(argv)" \
-  -e "return the text returned of (display dialog \"What has changed?\" default answer item 1 of argv)" \
-  -e "end" \
-  -- "$CHANGES"`
-
-if [ -z "$CHANGES" ];
-then
-	echo "User Cancelled"
-	exit 0
-fi
-
-echo $CHANGES > $messageTempFile
 
 export CHANGES
 
