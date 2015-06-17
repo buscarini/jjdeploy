@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.5.5"
+VERSION="0.5.6"
 
 ### Constants
 
@@ -468,7 +468,10 @@ then
 	upload "$FTPREMOTEPATH" "$TRANSMIT_FAVNAME" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH" 
 	
 	#### Remove temp message file
-	rm "$messageTempFile"
+	if [ -f "$messageTempFile"];
+	then
+		rm "$messageTempFile"
+	fi
 	
 	#### Send email
 	
@@ -493,6 +496,7 @@ then
 	fi
 	
 	echo -e "${greenColor}\nDone\n${endColor}"
+	
 else
 	
 	#### Report Error
@@ -504,4 +508,5 @@ else
 fi
 
 tput bel
+exit 0
 
