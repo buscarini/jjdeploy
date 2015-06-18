@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.5.6"
+VERSION="0.5.7"
 
 ### Constants
 
@@ -16,6 +16,7 @@ SCRIPTPATH="${SCRIPTPATH}/../"
 SEND_EMAIL=false
 DISABLE_SOURCE_CONTROL=0
 XCODEPARAMS=""
+APPICON=""
 messageTempFile="${PWD}/.jjdeploy_tmp_message"
 
 ### Functions
@@ -54,11 +55,20 @@ function upload ()
 	ICONARCHIVEPATH=$7
 	
 	#### Upload with Transmit
-	echo "Uploading to ${FTPREMOTEPATH} …"
+	echo "Uploading to ${FTPREMOTEPATH} …"	
 	
 	remoteFolder=$(basename "${FTPREMOTEPATH}")
 	
 	upload_result=`osascript  -e "
+	
+	on theSplit(theString, theDelimiter)
+		set oldDelimiters to AppleScript's text item delimiters
+		set AppleScript's text item delimiters to theDelimiter
+		set theArray to every text item of theString
+		set AppleScript's text item delimiters to oldDelimiters
+		return theArray
+	end theSplit
+	
 	on is_running(appName)
 		tell application \"System Events\" to (name of processes) contains appName
 	end is_running
@@ -75,8 +85,15 @@ function upload ()
 			connect to server
 			tell remote browser
 			
-				create folder named \"$remoteFolder\"
+				change location to path \"/\"
 			
+				set components to my theSplit(\"${FTPREMOTEPATH}\", \"/\")
+
+				repeat with component in components
+					create folder named component
+					change location to path component
+				end repeat
+						
 				set result to (upload item at path \"${HTMLARCHIVEPATH}\" to \"${FTPREMOTEPATH}\" with resume mode overwrite)
 				if not result then
 					return false
@@ -414,19 +431,32 @@ then
 	#### Find Icon & copy to archive
 	echo "Finding Icon…"
 	
-	iconpath=`find $ROOT_DIR -type d -not -path '*/\.*' -name '*.appiconset' -print | head -n 1`
-	if [ -n "$iconpath" ];
+	if [ -z "$APPICON" ];
 	then
-		icon=`find ${iconpath} -type f -not -path '*/\.*' -print0 | xargs -0 ls -1S | head -n 1`
-		if [ -n "$icon" ];
+		iconpath=`find $ROOT_DIR -type d -not -path '*/\.*' -name '*.appiconset' -print | head -n 1`
+		if [ -n "$iconpath" ];
 		then
-			cp "$icon" "$ICONARCHIVEPATH"
+			icon=`find ${iconpath} -type f -not -path '*/\.*' -print0 | xargs -0 ls -1S | head -n 1`
+			if [ -n "$icon" ];
+			then
+				if [ $verbose -ne 1 ]; then
+				echo "Found icon: $icon"	
+				fi
+				
+				cp "$icon" "$ICONARCHIVEPATH"
+			else
+				echo -e "${redColor} Error: Icon file not found. Please check that your image asset contains the app icon.\n${endColor}"
+			fi
 		else
-			echo -e "${redColor} Error: Icon file not found. Please check that your image asset contains the app icon.\n${endColor}"
+			echo -e "${redColor} Error: Icon file not found. Image assets are required to display the app icon.\n${endColor}"
 		fi
 	else
-		echo -e "${redColor} Error: Icon file not found. Image assets are required to display the app icon.\n${endColor}"
+		if [ $verbose -ne 1 ]; then
+		echo "Using icon: $APPICON"
+		fi
+		cp "$APPICON" "$ICONARCHIVEPATH"
 	fi
+	
 fi
 
 if [ -f $IPAARCHIVEPATH ] && [ -f $HTMLARCHIVEPATH ];
@@ -468,7 +498,7 @@ then
 	upload "$FTPREMOTEPATH" "$TRANSMIT_FAVNAME" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH" 
 	
 	#### Remove temp message file
-	if [ -f "$messageTempFile"];
+	if [ -f "$messageTempFile" ];
 	then
 		rm "$messageTempFile"
 	fi
