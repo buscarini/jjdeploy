@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.5.7"
+VERSION="0.5.8"
 
 ### Constants
 
@@ -70,7 +70,11 @@ function upload ()
 	end theSplit
 	
 	on is_running(appName)
-		tell application \"System Events\" to (name of processes) contains appName
+		try
+			tell application \"System Events\" to (name of processes) contains appName
+		 on error line number num
+		 	return true
+		end try
 	end is_running
 	
 	set wasRunning to is_running(\"Transmit\")
