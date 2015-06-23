@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.5.8"
+VERSION="0.5.9"
 
 ### Constants
 
@@ -249,12 +249,12 @@ while [ "$1" != "" ]; do
 	esac
 done
 
-if [ -z ${config_file} ];
+if [ -z "${config_file}" ];
 then
 config_file="${PWD}/jjdeploy.config"
 fi
 
-if [ ! -f ${config_file} ];
+if [ ! -f "${config_file}" ];
 then	
 	echo -e "${redColor} Error: No config file found. Check your current path or use jjdeploy init to create an initial template.\n${endColor}"
 	exit 1
@@ -266,7 +266,7 @@ echo "Reading config file ${config_file} …"
 source "${config_file}"
 
 home_config_file="${HOME}/.jjdeploy/jjdeploy.config"
-if [ -f ${home_config_file} ];
+if [ -f "${home_config_file}" ];
 then
 	source "${home_config_file}"	
 fi
