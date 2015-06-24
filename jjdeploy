@@ -17,6 +17,9 @@ SEND_EMAIL=false
 DISABLE_SOURCE_CONTROL=0
 XCODEPARAMS=""
 APPICON=""
+EMAIL=""
+EMAIL_NAME=""
+
 messageTempFile="${PWD}/.jjdeploy_tmp_message"
 
 ### Functions
