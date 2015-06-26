@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.5.9"
+VERSION="0.6.0"
 
 ### Constants
 
@@ -63,6 +63,10 @@ function upload ()
 	remoteFolder=$(basename "${FTPREMOTEPATH}")
 	
 	upload_result=`osascript  -e "
+	
+	tell application \"System Events\" to set thePID to (unix id of process \"System Events\")
+	set killCMD to (\"kill -9 \" & thePID) as text
+	do shell script killCMD
 	
 	on theSplit(theString, theDelimiter)
 		set oldDelimiters to AppleScript's text item delimiters
