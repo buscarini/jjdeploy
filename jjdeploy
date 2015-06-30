@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.6.0"
+VERSION="0.6.1"
 
 ### Constants
 
@@ -64,10 +64,6 @@ function upload ()
 	
 	upload_result=`osascript  -e "
 	
-	tell application \"System Events\" to set thePID to (unix id of process \"System Events\")
-	set killCMD to (\"kill -9 \" & thePID) as text
-	do shell script killCMD
-	
 	on theSplit(theString, theDelimiter)
 		set oldDelimiters to AppleScript's text item delimiters
 		set AppleScript's text item delimiters to theDelimiter
@@ -76,17 +72,9 @@ function upload ()
 		return theArray
 	end theSplit
 	
-	on is_running(appName)
-		try
-			tell application \"System Events\" to (name of processes) contains appName
-		 on error line number num
-		 	return true
-		end try
-	end is_running
-	
-	set wasRunning to is_running(\"Transmit\")
+	set wasRunning to application \"Transmit\" is running
 
-	with timeout of 600 seconds
+	with timeout of 900 seconds
 	tell application \"Transmit\"
 	set SuppressAppleScriptAlerts to true
 	set suppress errors to true
