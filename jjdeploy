@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.6.1"
+VERSION="0.6.2"
 
 ### Constants
 
@@ -19,6 +19,7 @@ XCODEPARAMS=""
 APPICON=""
 EMAIL=""
 EMAIL_NAME=""
+CI_SERVER=0
 
 messageTempFile="${PWD}/.jjdeploy_tmp_message"
 
@@ -72,7 +73,7 @@ function upload ()
 		return theArray
 	end theSplit
 	
-	set wasRunning to application \"Transmit\" is running
+	-- set wasRunning to application \"Transmit\" is running
 
 	with timeout of 900 seconds
 	tell application \"Transmit\"
@@ -122,12 +123,19 @@ function upload ()
 			close remote browser
 		end tell
 		close doc
-	if not wasRunning then
-		quit
-	end if
+	
+	-- if not wasRunning then
+	-- 	quit
+	-- end if
+	
 	return true
 	end tell
 	end timeout"`
+	
+	if [ $CI_SERVER -eq 1 ];
+	then
+		killall Transmit
+	fi
 	
 	if [ "$upload_result" = "false" ];
 	then
@@ -363,6 +371,9 @@ fi
 
 export CHANGES
 
+## Get the build number before archiving, later may be incremented in the last build phase and it won't be the same as the app build
+export BUILD_NUMBER=`/usr/libexec/PlistBuddy -c Print:CFBundleVersion "$ROOT_DIR/$PLISTFILE"`
+
 #### Check required resources are copied into the project folder
 
 #### Archive
@@ -405,7 +416,6 @@ rm -rf "$XCARCHIVEPATH"
 export CURRENT_TIMESTAMP=`date +"%d.%m.%Y %H:%M"`
 
 export APP_VERSION=`/usr/libexec/PlistBuddy -c Print:CFBundleShortVersionString "$ROOT_DIR/$PLISTFILE"`
-export BUILD_NUMBER=`/usr/libexec/PlistBuddy -c Print:CFBundleVersion "$ROOT_DIR/$PLISTFILE"`
 export BUNDLE_ID=`/usr/libexec/PlistBuddy -c Print:CFBundleIdentifier "$ROOT_DIR/$PLISTFILE"`
 export ICON_URL="${PUBLISH_URL}/$ICONFILENAME"
 
