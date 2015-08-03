@@ -16,7 +16,7 @@ def uploadFiles(ftp,files):
         
         if os.path.isdir(file):
             print "mkdir " + name            
-            if not name in ftp.nlst():
+            if not name in ftp.nlst() and name!="/":
                 ftp.mkd(name)
 
             ftp.cwd(name)
@@ -70,7 +70,8 @@ folders.reverse()
 for folder in folders:
     print "mkdir " + folder
 
-    if not folder in ftp.nlst():
+    if not folder in ftp.nlst() and folder!="/":
+        print "mkdir " + folder
         ftp.mkd(folder)
         
     ftp.cwd(folder)
