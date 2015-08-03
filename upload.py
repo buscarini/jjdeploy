@@ -7,29 +7,31 @@ import sys
 import getpass
 import askpass
 
-def uploadFiles(ftp,files,path):
+def uploadFiles(ftp,files):
     for file in files:
-        local = os.path.join(path,file)
-        if not os.path.exists(local):
-            print "Error: file " + local + " doesn't exist"
+        name = os.path.basename(file)        
+        if not os.path.exists(file):
+            print "Error: file " + file + " doesn't exist"
             exit(1)
         
-        if os.path.isdir(local):
-            print "mkdir " + file            
-            if not file in ftp.nlst():
-                ftp.mkd(file)
+        if os.path.isdir(file):
+            print "mkdir " + name            
+            if not name in ftp.nlst():
+                ftp.mkd(name)
 
-            ftp.cwd(file)
+            ftp.cwd(name)
             
-            children = os.listdir(local)
-            print children
+            children = os.listdir(file)
+            subfiles = []
+            for child in children:
+                subfiles.append(os.path.join(file,child))    
 
-            uploadFiles(ftp,children,local)
+            uploadFiles(ftp,subfiles)
             
             ftp.cwd("..")
         else:    
             print "upload " + file
-            ftp.storbinary(('STOR ' + file).encode('utf-8'), open(file, 'rb'))
+            ftp.storbinary(('STOR ' + name).encode('utf-8'), open(file, 'rb'))
     
 
 if len(sys.argv)<5:
@@ -45,8 +47,7 @@ files = params
 
 passw = askpass.findPass(service,account)
 if passw==None:
-    print "Please create the password first or allow access"
-    exit(1)
+    sys.exit("Please create the password first or allow access")
 
 print "connect to server " +  server + " port " + port
 ftp = FTP()
@@ -75,7 +76,7 @@ for folder in folders:
     ftp.cwd(folder)
 
 
-uploadFiles(ftp,files,"")
+uploadFiles(ftp,files)
 
     
 ftp.quit()
