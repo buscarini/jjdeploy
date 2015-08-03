@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.6.2"
+VERSION="0.7.0"
 
 ### Constants
 
@@ -48,6 +48,38 @@ function sendEmail ()
 	end tell"
 }
 
+function upload2 ()
+{
+	FTPREMOTEPATH=$1
+	
+	KEYCHAINITEM=$2
+	ACCOUNT=$3
+	SERVER=$4
+	PORT=$5
+	
+	HTMLARCHIVEPATH=$6
+	PLISTARCHIVEPATH=$7
+	IPAARCHIVEPATH=$8
+	CSSARCHIVEPATH=$9
+	ICONARCHIVEPATH=${10}
+	
+	#### Upload
+	echo "Uploading to ${FTPREMOTEPATH} …"	
+	
+	remoteFolder=$(basename "${FTPREMOTEPATH}")
+	
+	echo "${SCRIPTPATH}\"/upload.py \"$KEYCHAINITEM\" \"$ACCOUNT\" \"$SERVER\" \"$PORT\" \"$FTPREMOTEPATH\" \"$HTMLARCHIVEPATH\" \"$PLISTARCHIVEPATH\" \"$IPAARCHIVEPATH\" \"$CSSARCHIVEPATH\" \"$ICONARCHIVEPATH\""
+	exit 1
+	
+	upload_result=$("${SCRIPTPATH}"/upload.py "$KEYCHAINITEM" "$ACCOUNT" "$SERVER" "$PORT" "$FTPREMOTEPATH" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH")
+	
+	if [ "$upload_result" = "false" ];
+	then
+		echo -e "${redColor} Error uploading file. Please check your FTPREMOTEPATH configuration and try again.\n${endColor}"
+		exit 1
+	fi
+}
+
 function upload ()
 {
 	FTPREMOTEPATH=$1
@@ -58,11 +90,14 @@ function upload ()
 	CSSARCHIVEPATH=$6
 	ICONARCHIVEPATH=$7
 	
+	if [ $CI_SERVER -eq 1 ];
+	then
+		killall Transmit
+	fi
+	
 	#### Upload with Transmit
 	echo "Uploading to ${FTPREMOTEPATH} …"	
-	
-	remoteFolder=$(basename "${FTPREMOTEPATH}")
-	
+		
 	upload_result=`osascript  -e "
 	
 	on theSplit(theString, theDelimiter)
@@ -314,7 +349,30 @@ ICONARCHIVEPATH="$ARCHIVEPATH/$ICONFILENAME"
 
 if [ $only_upload -eq 1 ];
 then
-	upload "$FTPREMOTEPATH" "$TRANSMIT_FAVNAME" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH" 
+	if [ -z "${KEYCHAIN_ITEM}" ]; then
+		echo -e "${redColor}\n Error: KEYCHAIN_ITEM is not defined \n${endColor}"
+		exit 1
+	fi
+	
+	if [ -z "${FTPACCOUNT}" ]; then
+		echo -e "${redColor}\n Error: FTPACCOUNT is not defined \n${endColor}"
+		exit 1
+	fi
+
+	if [ -z "${FTPSERVER}" ]; then
+		echo -e "${redColor}\n Error: FTPSERVER is not defined \n${endColor}"
+		exit 1
+	fi
+
+	if [ -z "${FTPPORT}" ]; then
+		echo -e "${redColor}\n Error: FTPPORT is not defined \n${endColor}"
+		exit 1
+	fi
+
+
+	upload2 "$FTPREMOTEPATH" "$KEYCHAIN_ITEM" "$FTPACCOUNT" "$FTPSERVER" "$FTPPORT" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH" 
+	
+	# upload "$FTPREMOTEPATH" "$TRANSMIT_FAVNAME" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH"
 	echo -e "${greenColor}\nDone\n${endColor}"
 	
 	exit 0
@@ -501,10 +559,29 @@ then
 		fi
 	fi
 	
-	#### Upload with Transmit
-	remoteFolder=$(basename "${FTPREMOTEPATH}")
+	#### Upload to ftp
+	if [ -z "${KEYCHAIN_ITEM}" ]; then
+		echo -e "${redColor}\n Error: KEYCHAIN_ITEM is not defined \n${endColor}"
+		exit 1
+	fi
 	
-	upload "$FTPREMOTEPATH" "$TRANSMIT_FAVNAME" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH" 
+	if [ -z "${FTPACCOUNT}" ]; then
+		echo -e "${redColor}\n Error: FTPACCOUNT is not defined \n${endColor}"
+		exit 1
+	fi
+
+	if [ -z "${FTPSERVER}" ]; then
+		echo -e "${redColor}\n Error: FTPSERVER is not defined \n${endColor}"
+		exit 1
+	fi
+
+	if [ -z "${FTPPORT}" ]; then
+		echo -e "${redColor}\n Error: FTPPORT is not defined \n${endColor}"
+		exit 1
+	fi
+	
+	upload2 "$FTPREMOTEPATH" "$KEYCHAIN_ITEM" "$FTPACCOUNT" "$FTPSERVER" "$FTPPORT" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH" 
+	# upload "$FTPREMOTEPATH" "$TRANSMIT_FAVNAME" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH"
 	
 	#### Remove temp message file
 	if [ -f "$messageTempFile" ];
