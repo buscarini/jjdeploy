@@ -7,7 +7,7 @@ Script to deploy iOS apps (enterprise or adhoc). Archives &amp; exports your app
 ## Requirements
 
 - The app icon must be in an image asset for the script to be able to correctly find it and use it
-- [Transmit](http://panic.com/transmit/) is required to upload the files to a sever, but you can change the script to use a different method.
+- For uploading to FTP the password must be stored in the Keychain
 - [Xcode Command Line Tools](https://developer.apple.com/xcode/). You can install them using the command:
 
 	`$ xcode-select --install`
@@ -46,6 +46,18 @@ Finally, run *jjdeploy* in your project folder:
 
 4. `$ jjdeploy`
 
+*Note that you need to store the password in the Keychain before trying to upload to an ftp server*
+
+### Store FTP password in the Keychain
+
+1. Open Keychain
+2. Tap +
+3. Type whatever you want as the item name (It should match KEYCHAIN_ITEM in your config file)
+4. Type the ftp user account (It should match FTPACCOUNT in your config file)
+5. Enter the ftp password
+6. Save
+
+
 ### Update
 
 This is the command to update JJDeploy to the latest version:
@@ -60,9 +72,15 @@ You can run jjdeploy with these parameters:
 
 > *init* (Without any additional parameters: jjdeploy init). Creates a template config file with the name jjdeploy.config in the current directory
 
+> *init resources* (Without any additional parameters: jjdeploy init resources). This creates a local directory with the resources used in the website. This allows to have different css/image files and to customize the html
+
+> *upload* This will only upload a previous archive, without requiring to build and archive again.
+
 > *-v (or --verbose)* will display all the xcodebuild output
 
 > *-email* will send an email with the changes to the company email address in the script
+
+> *-noemail* will avoid sending the email even if the config contains the information
 
 > *--version* Displays the current script version
 
