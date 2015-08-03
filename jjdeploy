@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.7.3"
+VERSION="0.7.4"
 
 ### Constants
 
@@ -72,11 +72,10 @@ function upload ()
 	
 	upload_result=$("${SCRIPTPATH}/bin/upload.py" "$KEYCHAINITEM" "$ACCOUNT" "$SERVER" "$PORT" "$FTPREMOTEPATH" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH")
 	return_code=$?
-		
-	# echo $upload_result
 	
 	if [[ $return_code != 0 ]];
 	then
+		echo $upload_result
 		echo -e "${redColor} Error uploading file. Please check your FTPREMOTEPATH configuration and try again.\n${endColor}"
 		exit 1
 	fi
