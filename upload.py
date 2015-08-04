@@ -11,8 +11,7 @@ def uploadFiles(ftp,files):
     for file in files:
         name = os.path.basename(file)        
         if not os.path.exists(file):
-            print "Error: file " + file + " doesn't exist"
-            exit(1)
+            exit("Error: file " + file + " doesn't exist")
         
         if os.path.isdir(file):
             print "mkdir " + name            
@@ -47,13 +46,16 @@ files = params
 
 passw = askpass.findPass(service,account)
 if passw==None:
-    sys.exit("Please create the password first or allow access")
+    sys.exit("Please create the password first or allow access for service: " + service + " account " + account)
 
 print "connect to server " +  server + " port " + port
 ftp = FTP()
 ftp.connect(server,port)
 ftp.login(account,passw)
 ftp.cwd('/')
+
+if path.endswith("/"):
+    path = path[:-1]
 
 folders = []
 while 1:
@@ -68,8 +70,6 @@ while 1:
 folders.reverse()
 
 for folder in folders:
-    print "mkdir " + folder
-
     if not folder in ftp.nlst() and folder!="/":
         print "mkdir " + folder
         ftp.mkd(folder)
