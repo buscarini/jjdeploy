@@ -14,8 +14,9 @@ def uploadFiles(ftp,files):
             exit("Error: file " + file + " doesn't exist")
         
         if os.path.isdir(file):
-            print "mkdir " + name            
-            if not name in ftp.nlst() and name!="/":
+            print "mkdir " + name
+            remoteFiles = map(str.upper,ftp.nlst())
+            if not name.upper() in remoteFiles and name!="/":
                 ftp.mkd(name)
 
             ftp.cwd(name)
@@ -68,9 +69,11 @@ while 1:
         break
         
 folders.reverse()
+folders = filter(lambda x: x!="/",folders)
 
 for folder in folders:
-    if not folder in ftp.nlst() and folder!="/":
+    remoteFiles = map(str.upper,ftp.nlst())
+    if not folder.upper() in remoteFiles:
         print "mkdir " + folder
         ftp.mkd(folder)
         
