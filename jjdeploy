@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.7.6"
+VERSION="0.7.7"
 
 ### Constants
 
@@ -349,7 +349,7 @@ else
 	build="xcodebuild -project \"$ROOT_DIR/$PROJECTNAME\" -scheme \"$SCHEME\" -destination generic/platform=iOS archive -archivePath \"$XCARCHIVEPATH\" ${XCODEPARAMS}"
 fi
 
-[ $verbose -ne 1 ] && build=$build" | egrep -A 5 \"(error|warning):\""
+[ $verbose -ne 1 ] && build=$build" | egrep -A 5 \"(error):\""
 
 eval $build
 
