@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.7.7"
+VERSION="0.7.8"
 
 ### Constants
 
@@ -375,7 +375,15 @@ rm -rf "$XCARCHIVEPATH"
 export CURRENT_TIMESTAMP=`date +"%d.%m.%Y %H:%M"`
 
 export APP_VERSION=`/usr/libexec/PlistBuddy -c Print:CFBundleShortVersionString "$ROOT_DIR/$PLISTFILE"`
-export BUNDLE_ID=`/usr/libexec/PlistBuddy -c Print:CFBundleIdentifier "$ROOT_DIR/$PLISTFILE"`
+
+
+## Find info.plist inside the app
+unzip -o "$IPAARCHIVEPATH" -d "${ARCHIVEPATH}" > /dev/null 2> /dev/null
+ipaInfoPath=$(find "${ARCHIVEPATH}/Payload" -type f -not -path "*/\.*" -maxdepth 2 -name 'Info.plist' -print | head -n 1)
+export BUNDLE_ID=`/usr/libexec/PlistBuddy -c Print:CFBundleIdentifier "$ipaInfoPath"`
+rm -rf "${ARCHIVEPATH}/Payload"
+
+# export BUNDLE_ID=`/usr/libexec/PlistBuddy -c Print:CFBundleIdentifier "$ROOT_DIR/$PLISTFILE"`
 export ICON_URL="${PUBLISH_URL}/$ICONFILENAME"
 
 export DISPLAY_APPNAME
