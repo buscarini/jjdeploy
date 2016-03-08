@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.7.8"
+VERSION="0.7.9"
 
 ### Constants
 
@@ -302,9 +302,9 @@ if [ $interactive -eq 1 ]; then
 		CHANGES="$(hg log -l 1 --template "{desc}")"
 	fi
 
-	if [ -f $messageTempFile ]
+	if [ -f "$messageTempFile" ]
 	then
-		CHANGES=$(<$messageTempFile)
+		CHANGES=$(<"$messageTempFile")
 	fi
 
 	if [ $verbose -eq 1 ]; then
@@ -323,7 +323,7 @@ if [ $interactive -eq 1 ]; then
 		exit 0
 	fi
 
-	echo $CHANGES > $messageTempFile
+	echo $CHANGES > "$messageTempFile"
 else
 	CHANGES=$message
 fi
