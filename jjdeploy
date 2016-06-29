@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.7.9"
+VERSION="0.8.0"
 
 ### Constants
 
@@ -373,6 +373,8 @@ eval $archive
 rm -rf "$XCARCHIVEPATH"
 
 export CURRENT_TIMESTAMP=`date +"%d.%m.%Y %H:%M"`
+
+export CURRENT_YEAR=$(date +"%Y")
 
 export APP_VERSION=`/usr/libexec/PlistBuddy -c Print:CFBundleShortVersionString "$ROOT_DIR/$PLISTFILE"`
 
