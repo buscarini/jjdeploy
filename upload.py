@@ -96,5 +96,5 @@ if passw==None:
 print "connect to server " +  server + " port " + port
 try:
     ftpSession(server, port, account, passw, path, true)
-except Exception as e:
+except:
     ftpSession(server, port, account, passw, path, false)

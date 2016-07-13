@@ -2,7 +2,6 @@
 import sys
 import os
 import re
-import keychain
 
 def decode_hex(s):
     s = eval('"' + re.sub(r"(..)", r"\x\1", s) + '"')
