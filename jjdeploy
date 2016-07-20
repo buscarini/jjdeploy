@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.8.2"
+VERSION="0.8.3"
 
 ### Constants
 
@@ -11,7 +11,7 @@ endColor='\x1B[0m'
 RESOURCESPATH="jjdeploy_resources"
 SCRIPTPATH="$(cd "$(dirname "$0")" && pwd)"
 SCRIPTPATH="${SCRIPTPATH}""/$(readlink "$0")"
-SCRIPTPATH="$(dirname ${SCRIPTPATH})"
+SCRIPTPATH="$(dirname "${SCRIPTPATH}")"
 SCRIPTPATH="${SCRIPTPATH}/../"
 SEND_EMAIL=false
 DISABLE_SOURCE_CONTROL=0
@@ -91,12 +91,12 @@ then
 	else
 		cp "${SCRIPTPATH}/${CONFIG_FILE}" "${PWD}"
 		
-		workspaces="$(basename "$(find $PWD -iname "*.xcworkspace" -type d -not -path '*/\.*' -print0 | head -1)")"
+		workspaces="$(basename "$(find "$PWD" -iname "*.xcworkspace" -type d -not -path '*/\.*' -print0 | head -1)")"
 		workspacename=${workspaces%.xcworkspace}
 				
 		if [ -z "$workspacename" ];
 		then
-			project="$(basename "$(find $PWD -iname "*.xcodeproj" -type d -not -path '*/\.*' -print0 | head -1)")"
+			project="$(basename "$(find "$PWD" -iname "*.xcodeproj" -type d -not -path '*/\.*' -print0 | head -1)")"
 			projectname=project%.xcodeproj}
 			workspacename=projectname
 		
