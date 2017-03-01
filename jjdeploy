@@ -2,6 +2,9 @@
 
 VERSION="0.8.3"
 
+OLD_WORKSPACE=$WORKSPACE
+unset WORKSPACE
+
 ### Constants
 
 CONFIG_FILE="jjdeploy.config"
@@ -533,6 +536,8 @@ else
 	osascript  -e "display alert \"Error archiving ${APPNAME}. No ipa or html file\""
 	open $ARCHIVEPATH
 fi
+
+WORKSPACE=$OLD_WORKSPACE
 
 tput bel
 exit 0

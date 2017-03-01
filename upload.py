@@ -34,7 +34,7 @@ def uploadFiles(ftp,files):
             print "upload " + file
             ftp.storbinary(('STOR ' + name).encode('utf-8'), open(file, 'rb'))
     
-def ftpSession(server, port, account, passw, path, secure):        
+def ftpSession(server, port, account, passw, path, files, secure):        
     ftp = FTP()
     if secure:
         ftp = FTP_TLS()
@@ -95,6 +95,6 @@ if passw==None:
 
 print "connect to server " +  server + " port " + port
 try:
-    ftpSession(server, port, account, passw, path, True)
+    ftpSession(server, port, account, passw, path, files, True)
 except:
-    ftpSession(server, port, account, passw, path, False)
+    ftpSession(server, port, account, passw, path, files, False)
