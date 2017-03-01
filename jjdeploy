@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.8.3"
+VERSION="0.8.4"
 
 OLD_WORKSPACE=$WORKSPACE
 unset WORKSPACE
@@ -347,8 +347,17 @@ fi
 
 if [ -n "$WORKSPACE" ];
 then
+	if [ $verbose -eq 1 ]; then
+		echo "Building workspace ${WORKSPACE}"
+	fi
+	
 	build="xcodebuild -workspace \"$ROOT_DIR/$WORKSPACE\" -scheme \"$SCHEME\" -destination generic/platform=iOS archive -archivePath \"$XCARCHIVEPATH\" ${XCODEPARAMS}"
 else
+	
+	if [ $verbose -eq 1 ]; then
+		echo "Building project ${PROJECTNAME}"
+	fi
+	
 	build="xcodebuild -project \"$ROOT_DIR/$PROJECTNAME\" -scheme \"$SCHEME\" -destination generic/platform=iOS archive -archivePath \"$XCARCHIVEPATH\" ${XCODEPARAMS}"
 fi
 
