@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.8.6"
+VERSION="0.8.7"
 
 OLD_WORKSPACE=$WORKSPACE
 unset WORKSPACE
@@ -82,6 +82,25 @@ function upload ()
 		echo -e "${redColor} Error uploading file. Please check your FTPREMOTEPATH configuration and try again.\n${endColor}"
 		exit 1
 	fi
+}
+
+function resourceFilePath ()
+{
+	RESOURCESPATH=$1
+	RESOURCE=$2
+		
+	FINAL_RESOURCEPATH="${PWD}/${RESOURCESPATH}/${RESOURCE}"
+	if [ ! -f  "${FINAL_RESOURCEPATH}" ]; then
+		FINAL_RESOURCEPATH="${PWD}/.jjdeploy/${RESOURCESPATH}/${RESOURCE}"
+		if [ ! -f "${FINAL_RESOURCEPATH}" ]; then	
+			FINAL_RESOURCEPATH="${HOME}/.jjdeploy/${RESOURCESPATH}/${RESOURCE}"
+			if [ ! -f  "${FINAL_RESOURCEPATH}" ]; then	
+				FINAL_RESOURCEPATH="${SCRIPTPATH}/${RESOURCESPATH}/${RESOURCE}"
+			fi
+		fi
+	fi
+	
+	echo "${FINAL_RESOURCEPATH}"
 }
 
 function render ()
@@ -248,12 +267,12 @@ fi
 export PUBLISH_PLIST_URL="${PUBLISH_URL}/${APPNAME}.plist"
 export PUBLISH_IPA_URL="${PUBLISH_URL}/${APPNAME}.ipa"
 
+EXPORTPLIST=$(resourceFilePath "${RESOURCESPATH}" "export.plist")
+
 XCARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.xcarchive"
 IPAARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.ipa"
 PLISTPATH="${FINAL_RESOURCESPATH}/app.plist"
 PLISTARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.plist"
-EXPORTPLIST="${FINAL_RESOURCESPATH}/export.plist"
-
 TEMPLATE_HTML_FILENAME="${FINAL_RESOURCESPATH}/index_template.html"
 HTML_FILENAME="index.html"
 HTMLARCHIVEPATH="$ARCHIVEPATH/$HTML_FILENAME"
