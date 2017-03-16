@@ -84,6 +84,16 @@ function upload ()
 	fi
 }
 
+function render ()
+{
+	TEMPLATE_HTML_FILENAME=$1
+	HTMLARCHIVEPATH=$2
+	
+	`echo "export" $((set -o posix ; set)|awk -F "=" 'BEGIN{ORS=" "}1 $1~/[a-zA-Z]/ {print $1}')`
+	
+	perl -p -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "${TEMPLATE_HTML_FILENAME}" > "${HTMLARCHIVEPATH}"
+}
+
 if [ $# -eq 1 ] && [ $1 = "init" ];
 then
 	
@@ -242,6 +252,7 @@ XCARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.xcarchive"
 IPAARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.ipa"
 PLISTPATH="${FINAL_RESOURCESPATH}/app.plist"
 PLISTARCHIVEPATH="${ARCHIVEPATH}/${APPNAME}.plist"
+EXPORTPLIST="${FINAL_RESOURCESPATH}/export.plist"
 
 TEMPLATE_HTML_FILENAME="${FINAL_RESOURCESPATH}/index_template.html"
 HTML_FILENAME="index.html"
@@ -281,6 +292,7 @@ then
 	
 	exit 0
 fi
+
 
 ### Commands
 
@@ -376,7 +388,7 @@ rm "$IPAARCHIVEPATH" > /dev/null 2> /dev/null
 #### Export
 echo "Exporting ipa file…"
 
-archive="xcodebuild -exportArchive -exportFormat ipa -archivePath \"$XCARCHIVEPATH\" -exportPath \"$IPAARCHIVEPATH\" -exportProvisioningProfile \"$PROVPROFILE\""
+archive="xcodebuild -exportArchive -exportOptionsPlist \"$EXPORTPLIST\" -archivePath \"$XCARCHIVEPATH\" -exportPath \"$IPAARCHIVEPATH\""
 
 [ $verbose -ne 1 ] && archive=$archive" > /dev/null"
 
@@ -407,7 +419,8 @@ export COMPANYNAME
 #### Fill template & generate html file
 echo "Filling templates…"
 
-perl -p -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "${TEMPLATE_HTML_FILENAME}" > "${HTMLARCHIVEPATH}"
+render "${TEMPLATE_HTML_FILENAME}" "${HTMLARCHIVEPATH}"
+# perl -p -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "${TEMPLATE_HTML_FILENAME}" > "${HTMLARCHIVEPATH}"
 
 ### Fill plist file
 perl -p -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "${PLISTPATH}" > "${PLISTARCHIVEPATH}"
