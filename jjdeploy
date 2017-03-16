@@ -388,11 +388,17 @@ rm "$IPAARCHIVEPATH" > /dev/null 2> /dev/null
 #### Export
 echo "Exporting ipa file…"
 
-archive="xcodebuild -exportArchive -exportOptionsPlist \"$EXPORTPLIST\" -archivePath \"$XCARCHIVEPATH\" -exportPath \"$IPAARCHIVEPATH\""
+IPATMPPATH="${ARCHIVEPATH}/ipa"
+
+archive="${SCRIPTPATH}/bin/xcbuildsafe.sh -exportArchive -exportOptionsPlist \"$EXPORTPLIST\" -archivePath \"$XCARCHIVEPATH\" -exportPath \"$IPATMPPATH\""
 
 [ $verbose -ne 1 ] && archive=$archive" > /dev/null"
 
 eval $archive
+
+GENERATED_IPA=`find "$IPATMPPATH" -type f -name '*.ipa' -print | head -n 1`
+mv "$GENERATED_IPA" "$IPAARCHIVEPATH"
+rmdir "$IPATMPPATH"
 
 rm -rf "$XCARCHIVEPATH"
 
