@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.8.7"
+VERSION="0.8.8"
 
 OLD_WORKSPACE=$WORKSPACE
 unset WORKSPACE
@@ -12,12 +12,22 @@ greenColor='\x1B[0;32m'
 redColor='\x1B[0;31m'
 endColor='\x1B[0m'
 RESOURCESPATH="jjdeploy_resources"
-SCRIPTPATH="$(cd "$(dirname "$0")" && pwd)"
-SCRIPTPATH="${SCRIPTPATH}""/$(readlink "$0")"
-SCRIPTPATH="$(dirname "${SCRIPTPATH}")"
-SCRIPTPATH="${SCRIPTPATH}/../"
+
+pushd . > /dev/null
+THEPATH="${BASH_SOURCE[0]}";
+while([ -h "${THEPATH}" ]); do
+    cd "`dirname "${THEPATH}"`"
+    THEPATH="$(readlink "`basename "${THEPATH}"`")";
+done
+cd "`dirname "${THEPATH}"`" > /dev/null
+THEPATH="`pwd`";
+popd  > /dev/null
+
+SCRIPTPATH="${THEPATH}/../"
+
 SEND_EMAIL=false
 DISABLE_SOURCE_CONTROL=0
+EXPORTMETHOD="enterprise"
 XCODEPARAMS=""
 APPICON=""
 EMAIL=""
@@ -53,28 +63,28 @@ function sendEmail ()
 
 function upload ()
 {
-	FTPREMOTEPATH=$1
+	local FTPREMOTEPATH=$1
 	
-	KEYCHAINITEM=$2
-	ACCOUNT=$3
-	SERVER=$4
-	PORT=$5
+	local KEYCHAINITEM=$2
+	local ACCOUNT=$3
+	local SERVER=$4
+	local PORT=$5
 	
-	HTMLARCHIVEPATH=$6
-	PLISTARCHIVEPATH=$7
-	IPAARCHIVEPATH=$8
-	CSSARCHIVEPATH=$9
-	ICONARCHIVEPATH=${10}
+	local HTMLARCHIVEPATH=$6
+	local PLISTARCHIVEPATH=$7
+	local IPAARCHIVEPATH=$8
+	local CSSARCHIVEPATH=$9
+	local ICONARCHIVEPATH=${10}
 	
 	#### Upload
 	echo "Uploading to ${FTPREMOTEPATH} …"	
 	
-	remoteFolder=$(basename "${FTPREMOTEPATH}")
+	local remoteFolder=$(basename "${FTPREMOTEPATH}")
 	
 	# echo "${SCRIPTPATH}/bin/upload.py \"$KEYCHAINITEM\" \"$ACCOUNT\" \"$SERVER\" \"$PORT\" \"$FTPREMOTEPATH\" \"$HTMLARCHIVEPATH\" \"$PLISTARCHIVEPATH\" \"$IPAARCHIVEPATH\" \"$CSSARCHIVEPATH\" \"$ICONARCHIVEPATH\""
 	
-	upload_result=$("${SCRIPTPATH}/bin/upload.py" "$KEYCHAINITEM" "$ACCOUNT" "$SERVER" "$PORT" "$FTPREMOTEPATH" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH")
-	return_code=$?
+	local upload_result=$("${SCRIPTPATH}bin/upload.py" "$KEYCHAINITEM" "$ACCOUNT" "$SERVER" "$PORT" "$FTPREMOTEPATH" "$HTMLARCHIVEPATH" "$PLISTARCHIVEPATH" "$IPAARCHIVEPATH" "$CSSARCHIVEPATH" "$ICONARCHIVEPATH")
+	local return_code=$?
 	
 	if [[ $return_code != 0 ]];
 	then
@@ -84,10 +94,27 @@ function upload ()
 	fi
 }
 
+function generateExportPlist ()
+{
+	local METHOD=$1
+	local PLISTPATH=$2
+
+	cat > "$PLISTPATH" <<-EOF
+	<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+	<plist version="1.0">
+	<dict>
+        <key>method</key>
+        <string>${METHOD}</string>
+	</dict>
+	</plist>
+	EOF
+}
+
 function resourceFilePath ()
 {
-	RESOURCESPATH=$1
-	RESOURCE=$2
+	local RESOURCESPATH=$1
+	local RESOURCE=$2
 		
 	FINAL_RESOURCEPATH="${PWD}/${RESOURCESPATH}/${RESOURCE}"
 	if [ ! -f  "${FINAL_RESOURCEPATH}" ]; then
@@ -95,7 +122,7 @@ function resourceFilePath ()
 		if [ ! -f "${FINAL_RESOURCEPATH}" ]; then	
 			FINAL_RESOURCEPATH="${HOME}/.jjdeploy/${RESOURCESPATH}/${RESOURCE}"
 			if [ ! -f  "${FINAL_RESOURCEPATH}" ]; then	
-				FINAL_RESOURCEPATH="${SCRIPTPATH}/${RESOURCESPATH}/${RESOURCE}"
+				FINAL_RESOURCEPATH="${SCRIPTPATH}${RESOURCESPATH}/${RESOURCE}"
 			fi
 		fi
 	fi
@@ -121,7 +148,7 @@ then
 		echo -e "${redColor}Error: config file '${CONFIG_FILE}' already exists.${endColor}"
 		exit 1
 	else
-		cp "${SCRIPTPATH}/${CONFIG_FILE}" "${PWD}"
+		cp "${SCRIPTPATH}${CONFIG_FILE}" "${PWD}"
 		
 		workspaces="$(basename "$(find "$PWD" -iname "*.xcworkspace" -type d -not -path '*/\.*' -print0 | head -1)")"
 		workspacename=${workspaces%.xcworkspace}
@@ -172,7 +199,7 @@ then
 		exit 1
 	else
 		rm -rf "${PWD}/${RESOURCESPATH}"
-		cp -R "${SCRIPTPATH}/${RESOURCESPATH}" "${PWD}/${RESOURCESPATH}"
+		cp -R "${SCRIPTPATH}${RESOURCESPATH}" "${PWD}/${RESOURCESPATH}"
 		echo -e "${greenColor} '${RESOURCESPATH}' created. ${endColor}"
 	fi
 	
@@ -254,7 +281,7 @@ if [ ! -d  "${FINAL_RESOURCESPATH}" ]; then
 	if [ ! -d  "${FINAL_RESOURCESPATH}" ]; then	
 		FINAL_RESOURCESPATH="${HOME}/.jjdeploy/${RESOURCESPATH}"
 		if [ ! -d  "${FINAL_RESOURCESPATH}" ]; then	
-			FINAL_RESOURCESPATH="${SCRIPTPATH}/${RESOURCESPATH}"
+			FINAL_RESOURCESPATH="${SCRIPTPATH}${RESOURCESPATH}"
 		fi
 	fi
 fi
@@ -407,17 +434,23 @@ rm "$IPAARCHIVEPATH" > /dev/null 2> /dev/null
 #### Export
 echo "Exporting ipa file…"
 
+EXPORTPLISTPATH="$PWD/.export.plist"
+
+generateExportPlist "$EXPORTMETHOD" "$EXPORTPLISTPATH"
+
 IPATMPPATH="${ARCHIVEPATH}/ipa"
 
-archive="${SCRIPTPATH}/bin/xcbuildsafe.sh -exportArchive -exportOptionsPlist \"$EXPORTPLIST\" -archivePath \"$XCARCHIVEPATH\" -exportPath \"$IPATMPPATH\""
+archive="${SCRIPTPATH}bin/xcbuildsafe.sh -exportArchive -exportOptionsPlist \"$EXPORTPLISTPATH\" -archivePath \"$XCARCHIVEPATH\" -exportPath \"$IPATMPPATH\""
 
 [ $verbose -ne 1 ] && archive=$archive" > /dev/null"
 
 eval $archive
 
-GENERATED_IPA=`find "$IPATMPPATH" -type f -name '*.ipa' -print | head -n 1`
+GENERATED_IPA=$(find "$IPATMPPATH" -type f -name '*.ipa' -print | head -n 1)
 mv "$GENERATED_IPA" "$IPAARCHIVEPATH"
 rmdir "$IPATMPPATH"
+
+rm "$EXPORTPLISTPATH"
 
 rm -rf "$XCARCHIVEPATH"
 
