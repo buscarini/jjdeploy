@@ -7,6 +7,7 @@ import os
 import sys
 import getpass
 import askpass
+import uploadSFTP
 
 def uploadFiles(ftp,files):
     for file in files:
@@ -95,6 +96,6 @@ if passw==None:
 
 print "connect to server " +  server + " port " + port
 try:
-    ftpSession(server, port, account, passw, path, files, True)
+    uploadSFTP.sftpSession(server, port, account, passw, path, files)
 except:
     ftpSession(server, port, account, passw, path, files, False)
