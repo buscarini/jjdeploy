@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.9.0"
+VERSION="0.9.1"
 
 OLD_WORKSPACE=$WORKSPACE
 unset WORKSPACE
