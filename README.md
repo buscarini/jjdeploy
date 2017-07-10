@@ -12,6 +12,10 @@ Script to deploy iOS apps (enterprise or adhoc). Archives &amp; exports your app
 
 	`$ xcode-select --install`
 
+- [Paramiko](http://www.paramiko.org):
+
+	`$ pip install paramiko --user python`
+
 ## What does it do?
 
 This is the process followed by the script, step by step:
