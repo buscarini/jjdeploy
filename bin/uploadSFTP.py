@@ -38,6 +38,8 @@ def uploadFiles(sftp,files):
     
 def sftpSession(server, port, account, passw, path, files):
 
+    paramiko.util.log_to_file(".jjdeploy_upload.log")
+
     # get host key, if we know one
     hostkeytype = None
     hostkey = None
