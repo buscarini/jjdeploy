@@ -61,14 +61,13 @@ Finally, run *jjdeploy* in your project folder:
 5. Enter the ftp password
 6. Save
 
-
 ### Update
 
 This is the command to update JJDeploy to the latest version:
 
 `$ brew update && brew upgrade jjdeploy`
 
-Be aware that until we reach version 1.0 any update might contain breaking changes, and you might need to update your existing config files.
+Be aware that until we reach version 1.0 any update might contain breaking changes, and you might need to update your existing config files. If you are unsure of what you need to change, run *$ jjdeploy init* in a different path and see what changes you might need.
 
 ## Additional Options
 
@@ -89,6 +88,10 @@ You can run jjdeploy with these parameters:
 > *--version* Displays the current script version
 
 > *-h* Displays usage instructions
+
+## Configuration
+
+*jjdeploy.config* stores all your project configuration. You can have multiple files, for test, release, CI, etc. *$ jjdeploy init* creates a default config with all the options you can tweak.
 
 ## Creators
 
