@@ -65,6 +65,10 @@ Finally, run *jjdeploy* in your project folder:
 
 This is the command to update JJDeploy to the latest version:
 
+`$ jjdeploy update`
+
+Alternatively, you can do it manually:
+
 `$ brew update && brew upgrade jjdeploy`
 
 Be aware that until we reach version 1.0 any update might contain breaking changes, and you might need to update your existing config files. If you are unsure of what you need to change, run *$ jjdeploy init* in a different path and see what changes you might need.
