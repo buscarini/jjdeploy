@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.9.5"
+VERSION="0.9.6"
 
 OLD_WORKSPACE=$WORKSPACE
 unset WORKSPACE
@@ -412,7 +412,8 @@ fi
 
 export CHANGES
 
-## Get the build number before archiving, later may be incremented in the last build phase and it won't be the same as the app build
+## Get the build number and app version before archiving, later may be incremented in the last build phase and it won't be the same as the app build
+export APP_VERSION=`/usr/libexec/PlistBuddy -c Print:CFBundleShortVersionString "$ROOT_DIR/$PLISTFILE"`
 export BUILD_NUMBER=`/usr/libexec/PlistBuddy -c Print:CFBundleVersion "$ROOT_DIR/$PLISTFILE"`
 
 #### Check required resources are copied into the project folder
@@ -478,9 +479,6 @@ rm -rf "$XCARCHIVEPATH"
 export CURRENT_TIMESTAMP=`date +"%d.%m.%Y %H:%M"`
 
 export CURRENT_YEAR=$(date +"%Y")
-
-export APP_VERSION=`/usr/libexec/PlistBuddy -c Print:CFBundleShortVersionString "$ROOT_DIR/$PLISTFILE"`
-
 
 ## Find info.plist inside the app
 unzip -o "$IPAARCHIVEPATH" -d "${ARCHIVEPATH}" > /dev/null 2> /dev/null
