@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.9.4"
+VERSION="0.9.5"
 
 OLD_WORKSPACE=$WORKSPACE
 unset WORKSPACE
@@ -45,7 +45,7 @@ messageTempFile="${PWD}/.jjdeploy_tmp_message"
 
 function usage ()
 {
-    echo "Usage: jjdeploy init || init resources || upload [config_file] || [ [config_file] [-v] [-h] [--version] [-m \"message\"] ]\n Specify init without any other parameters to create an initial configuration file"
+    echo "Usage: jjdeploy init || init resources || update || upload [config_file] || [ [config_file] [-v] [-h] [--version] [-m \"message\"] ]\n Specify init without any other parameters to create an initial configuration file"
 }
 
 function sendEmail ()
@@ -152,6 +152,14 @@ function render ()
 	
 	perl -p -e 's/\$\{([^}]+)\}/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "${TEMPLATE_HTML_FILENAME}" > "${HTMLARCHIVEPATH}"
 }
+
+if [ $# -eq 1 ] && [ $1 = "update" ];
+then
+	echo "Updating to the latest version…"
+	brew update
+	brew upgrade jjdeploy
+	exit 0
+fi
 
 if [ $# -eq 1 ] && [ $1 = "init" ];
 then
