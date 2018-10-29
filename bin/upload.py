@@ -78,28 +78,28 @@ def ftpSession(server, port, account, passw, path, files, secure):
     
     ftp.quit()
     
-
-if len(sys.argv)<5:
-    sys.exit('Usage: %s "keychain_service" "keychain_account" "server" "port" "path" "use_sftp" [files]' % sys.argv[0])
+if __name__ == "__main__":
+    if len(sys.argv)<5:
+        sys.exit('Usage: %s "keychain_service" "keychain_account" "server" "port" "path" "use_sftp" [files]' % sys.argv[0])
     
-params = sys.argv[1:]
-service = params.pop(0)
-account = params.pop(0)
-server = params.pop(0)
-port = params.pop(0)
-path = params.pop(0)
-useSFTP = params.pop(0)
-files = params
+    params = sys.argv[1:]
+    service = params.pop(0)
+    account = params.pop(0)
+    server = params.pop(0)
+    port = params.pop(0)
+    path = params.pop(0)
+    useSFTP = params.pop(0)
+    files = params
 
-print("useSftp " + useSFTP)
-print("files " + str(files))
+    print("useSftp " + useSFTP)
+    print("files " + str(files))
 
-passw = askpass.findPass(service,account)
-if passw==None:
-    sys.exit("Please create the password first or allow access for service: " + service + " account " + account)
+    passw = askpass.findPass(service,account)
+    if passw==None:
+        sys.exit("Please create the password first or allow access for service: " + service + " account " + account)
 
-print "connect to server " +  server + " port " + port
-if useSFTP != "false":
-    uploadSFTP.sftpSession(server, port, account, passw, path, files)
-else:
-    ftpSession(server, port, account, passw, path, files, False)
+    print "connect to server " +  server + " port " + port
+    if useSFTP != "false":
+        uploadSFTP.sftpSession(server, port, account, passw, path, files)
+    else:
+        ftpSession(server, port, account, passw, path, files, False)
